@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="com.example.hw1_hashtable.main" target="11" />
       <module name="com.example.hw1_hashtable.test" target="11" />
+      <module name="hw1_hashtable.main" target="11" />
+      <module name="hw1_hashtable.test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
