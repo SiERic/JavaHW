@@ -12,26 +12,19 @@ import java.util.*;
  */
 public class Trie implements Serializable {
 
-    /**
-     * Class to store trie nodes
-     */
+    /** Class to store trie nodes */
     private class Node implements Serializable {
-        /**
-         * HashMap, stored links to ancestors of node
-         */
+
+        /** HashMap, stored links to ancestors of node */
         private HashMap<Character, Node> go;
-        /**
-         * Is node terminal or not
-         */
+
+        /** Is node terminal or not */
         private boolean isTerm;
-        /**
-         * Number of terminal nodes in subtree (including this node)
-         */
+
+        /** Number of terminal nodes in subtree (including this node) */
         private int size;
 
-        /**
-         * Constructs an empty Node
-         */
+        /** Constructs an empty Node */
         public Node() {
             go = new HashMap<>();
             isTerm = false;
@@ -49,9 +42,7 @@ public class Trie implements Serializable {
             return go.get(symbol);
         }
 
-        /**
-         * Serialize Node into OutputStream
-         */
+        /** Serialize Node into OutputStream */
         private void serialize(OutputStream out) throws IOException {
             ObjectOutputStream stream = new ObjectOutputStream(out);
             stream.writeBoolean(isTerm);
@@ -66,9 +57,7 @@ public class Trie implements Serializable {
             stream.flush();
         }
 
-        /**
-         * Deserialize Node from InputStream
-         */
+        /** Deserialize Node from InputStream */
         private void deserialize(InputStream in) throws IOException {
             ObjectInputStream stream = new ObjectInputStream(in);
             isTerm = stream.readBoolean();
@@ -83,14 +72,10 @@ public class Trie implements Serializable {
         }
     }
 
-    /**
-     * The trie root
-     */
+    /** The trie root */
     Node root;
 
-    /**
-     * Constructs an empty Trie
-     */
+    /** Constructs an empty Trie */
     public Trie() {
         root = new Node();
     }
@@ -129,9 +114,7 @@ public class Trie implements Serializable {
         }
     }
 
-    /**
-     * Checks if Trie contains a string
-     */
+    /** Checks if Trie contains a string */
     public boolean contains(String element) {
         if (element == null) {
             return false;
@@ -154,16 +137,12 @@ public class Trie implements Serializable {
         return addFromNode(root, element, 0, false);
     }
 
-    /**
-     * Gets a number of strings in Trie
-     */
+    /** Gets a number of strings in Trie */
     public int size() {
         return root.size;
     }
 
-    /**
-     * Returns number of Strings in the Trie which start with given prefix
-     */
+    /** Returns number of Strings in the Trie which start with given prefix */
     public int howManyStartWithPrefix(String prefix) {
         if (prefix == null) {
             return 0;
@@ -175,16 +154,12 @@ public class Trie implements Serializable {
         return cur.size;
     }
 
-    /**
-     * Serialize Trie into OutputStream
-     */
+    /** Serialize Trie into OutputStream */
     void serialize(OutputStream out) throws IOException {
         root.serialize(out);
     }
 
-    /**
-     * Deserialize Node from InputStream
-     */
+    /**  Deserialize Node from InputStream */
     void deserialize(InputStream in) throws IOException {
         root.deserialize(in);
     }
