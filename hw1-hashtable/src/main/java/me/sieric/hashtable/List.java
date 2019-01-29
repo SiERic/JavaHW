@@ -2,30 +2,24 @@ package me.sieric.hashtable;
 
 import java.util.Iterator;
 
-/**
- * Linked list to store a pairs of key and value
- */
+/** Linked list to store a pairs of key and value */
 public class List implements Iterable<Pair> {
 
-    private Node head, tail;
+    private Node head;
+    private Node tail;
 
     public List() {
         head = null;
         tail = null;
     }
 
-    /**
-     * Nodes, to iterate over List
-     */
+    /** Nodes, to store pairs in the List */
     private class Node {
 
-        /**
-         * Reference to the next Node of the List
-         */
+        /** Reference to the next Node of the List */
         private Node next;
-        /**
-         * Pair stored in the Node
-         */
+
+        /** Pair stored in the Node */
         private Pair data;
 
         private Node(Pair data) {
@@ -35,6 +29,10 @@ public class List implements Iterable<Pair> {
     }
 
 
+    /**
+     * Iterator to iterate through the List.
+     * All of the iterators are invalidated after any remove/put operation on the List
+     */
     private class ListIterator implements Iterator<Pair> {
 
         private Node cur;
@@ -45,10 +43,16 @@ public class List implements Iterable<Pair> {
             cur = List.this.head;
         }
 
+        /** Checks if whether there is an element to advance */
         public boolean hasNext() {
             return cur != null;
         }
 
+        /**
+         * Advance one position further
+         *
+         * @return Pair in position before advance
+         */
         public Pair next() {
             Pair data = cur.data;
             prevOfPrev = prev;
@@ -57,6 +61,7 @@ public class List implements Iterable<Pair> {
             return data;
         }
 
+        /** Remove the previous element */
         public void remove() {
             if (prev == null) {
                 throw new IllegalStateException();
@@ -68,15 +73,12 @@ public class List implements Iterable<Pair> {
         }
     }
 
-    @Override
+    /** Get the List Iterator */
     public Iterator<Pair> iterator() {
         return new ListIterator();
     }
 
-
-    /**
-     * Puts a new Pair into the end of the List
-     */
+    /** Puts a new Pair into the end of the List */
     public void put(Pair data) {
         if (head == null) {
             head = new Node(data);
@@ -121,10 +123,9 @@ public class List implements Iterable<Pair> {
         return null;
     }
 
-    /**
-     * Clears List
-     */
+    /** Clears List */
     public void clear() {
-        head = tail = null;
+        head = null;
+        tail = null;
     }
 }

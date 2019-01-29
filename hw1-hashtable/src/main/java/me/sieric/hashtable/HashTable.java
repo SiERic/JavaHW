@@ -1,29 +1,26 @@
 package me.sieric.hashtable;
 
 /**
- * Represents a collection of key/value pairs that are organized based on hash code of the key
+ * Represents a collection of key/value pairs
+ * that are organized based on hash code of the key
  */
 public class HashTable {
 
-    /**
-     * Lists with Pairs with equal hash
-     */
+    /** Lists with Pairs with equal hash */
     private List[] data;
 
-    private static final int HASH_BASE = 239, INITIAL_CAPACITY = 2;
+    private static final int INITIAL_CAPACITY = 2;
 
-    private int capacity = INITIAL_CAPACITY, size = 0;
+    private int capacity = INITIAL_CAPACITY;
+    private int size;
 
-    /**
-     * Creates a HashTable with base capacity
-     */
+    /** Creates a HashTable with base capacity */
     public HashTable() {
         data = new List[capacity];
+        size = 0;
     }
 
-    /**
-     * Gets string's hash
-     */
+    /** Gets string's hash */
     protected int getHash(String key) throws IllegalArgumentException {
         if (key == null) {
             throw new IllegalArgumentException("Key must be not null");
@@ -40,9 +37,7 @@ public class HashTable {
         return size;
     }
 
-    /**
-     * Returns true if HashTable contains a key or false otherwise.
-     */
+    /** Returns true if HashTable contains a key or false otherwise */
     public boolean contains(String key) throws IllegalArgumentException {
         int hash = getHash(key);
         return (data[hash] != null && data[hash].get(key) != null);
@@ -110,9 +105,7 @@ public class HashTable {
 
     }
 
-    /**
-     * Clears HashTable
-     */
+    /** Clears HashTable */
     public void clear() {
         capacity = INITIAL_CAPACITY;
         size = 0;
@@ -120,7 +113,8 @@ public class HashTable {
     }
 
     /**
-     * Rebuilds hashtable, increases the capacity (x2) if the number of stored elements is too big
+     * Rebuilds hashtable, increases the capacity (x2)
+     * if the number of stored elements is too big
      */
     protected void rebuild() {
         capacity *= 2;

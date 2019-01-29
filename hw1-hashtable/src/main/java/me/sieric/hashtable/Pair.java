@@ -1,20 +1,16 @@
 package me.sieric.hashtable;
 
-/**
- * A pair to store keys and values in lists in hashtable
- */
+/** A pair to store keys and values in lists in hashtable */
 public class Pair {
 
-    private String key, value;
+    private String key;
+    private String value;
 
     public Pair(String key, String value) {
         this.key = key;
         this.value = value;
     }
 
-    /**
-     * Gets
-     */
     public String getKey() {
         return key;
     }
