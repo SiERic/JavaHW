@@ -67,6 +67,9 @@ public class HashTable {
      * @return previous value by key or null if there's no such key in HashTable
      */
     public String put(String key, String value) throws IllegalArgumentException {
+        if (value == null) {
+            throw new IllegalArgumentException("Value must be not null");
+        }
         int hash = getHash(key);
         if (data[hash] == null) {
             data[hash] = new List();
