@@ -115,7 +115,8 @@ class HashTableTest {
 
     @Test
     void testNullKey() {
-        String s = null;
-        assertFalse(ht.contains(s));
+        assertThrows(IllegalArgumentException.class, () -> ht.contains(null));
+        assertThrows(IllegalArgumentException.class, () -> ht.get(null));
+        assertThrows(IllegalArgumentException.class, () -> ht.put(null, "kek"));
     }
 }

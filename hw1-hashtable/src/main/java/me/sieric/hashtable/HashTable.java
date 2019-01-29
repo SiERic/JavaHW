@@ -24,7 +24,10 @@ public class HashTable {
     /**
      * Gets string's hash
      */
-    protected int getHash(String key) {
+    protected int getHash(String key) throws IllegalArgumentException {
+        if (key == null) {
+            throw new IllegalArgumentException("Key must be not null");
+        }
         return Math.abs(key.hashCode()) % capacity;
     }
 
@@ -40,10 +43,7 @@ public class HashTable {
     /**
      * Returns true if HashTable contains a key or false otherwise.
      */
-    public boolean contains(String key) {
-        if (key == null) {
-            return false;
-        }
+    public boolean contains(String key) throws IllegalArgumentException {
         int hash = getHash(key);
         return (data[hash] != null && data[hash].get(key) != null);
     }
@@ -53,10 +53,7 @@ public class HashTable {
      *
      * @return value by key or null if there's no such key in HashTable
      */
-    public String get(String key) {
-        if (key == null) {
-            return null;
-        }
+    public String get(String key) throws IllegalArgumentException {
         int hash = getHash(key);
         if (data[hash] == null) {
             return null;
@@ -74,10 +71,7 @@ public class HashTable {
      *
      * @return previous value by key or null if there's no such key in HashTable
      */
-    public String put(String key, String value) {
-        if (key == null) {
-            return null;
-        }
+    public String put(String key, String value) throws IllegalArgumentException {
         int hash = getHash(key);
         if (data[hash] == null) {
             data[hash] = new List();
@@ -102,10 +96,7 @@ public class HashTable {
      *
      * @return value by key or null if there's no such key in HashTable
      */
-    public String remove(String key) {
-        if (key == null) {
-            return null;
-        }
+    public String remove(String key) throws IllegalArgumentException {
         int hash = getHash(key);
         if (data[hash] == null) {
             return null;
