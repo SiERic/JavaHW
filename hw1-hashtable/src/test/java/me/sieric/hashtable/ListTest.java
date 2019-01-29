@@ -3,6 +3,8 @@ package me.sieric.hashtable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ListTest {
@@ -24,43 +26,39 @@ class ListTest {
         }
     }
 
+
     @Test
-    void testGetHead() {
+    void testListIterator() {
+        Iterator<Pair> it = list.iterator();
+        assertFalse(it.hasNext());
         fill();
-        assertEquals(list.getHead().getData().getKey(), "a");
-        assertEquals(list.getHead().getData().getValue(), "1");
+        it = list.iterator();
+        assertTrue(it.hasNext());
+        assertEquals(it.next().getKey(), "a");
     }
 
     @Test
-    void testGetHeadFromEmptyList() {
-        assertNull(empty.getHead());
-    }
-
-    @Test
-    void testGetTail() {
+    void testListIteratorRemove() {
         fill();
-        assertEquals(list.getTail().getData().getKey(), "aaaaa");
-        assertEquals(list.getTail().getData().getValue(), "5");
-    }
-
-    @Test
-    void testGetTailFromEmptyList() {
-        assertNull(empty.getTail());
+        Iterator<Pair> it = list.iterator();
+        assertTrue(it.hasNext());
+        it.next();
+        it.remove();
+        it = list.iterator();
+        assertEquals(it.next().getKey(), "aa");
     }
 
     @Test
     void testPut() {
         fill();
         list.put(new Pair("sasha", "top"));
-        assertEquals(list.getTail().getData().getKey(), "sasha");
-        assertEquals(list.getTail().getData().getValue(), "top");
+        assertEquals(list.get("sasha").getValue(), "top");
     }
 
     @Test
     void testPutIntoEmptyList() {
         empty.put(new Pair("sasha", "top"));
-        assertEquals(empty.getTail().getData().getKey(), "sasha");
-        assertEquals(empty.getTail().getData().getValue(), "top");
+        assertEquals(empty.get("sasha").getValue(), "top");
     }
 
     @Test
@@ -82,15 +80,16 @@ class ListTest {
     @Test
     void testRemove() {
         fill();
-        list.remove("a");
+        assertEquals(list.remove("a").getValue(), "1");
         assertNull(list.get("a"));
+        assertNull(list.remove("kek"));
     }
 
     @Test
     void testClear() {
         fill();
         list.clear();
-        assertNull(list.getHead());
-        assertNull(list.getTail());
+        Iterator<Pair> it = list.iterator();
+        assertFalse(it.hasNext());
     }
 }

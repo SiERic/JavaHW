@@ -130,12 +130,12 @@ public class HashTable {
             if (oldData[i] == null) {
                 continue;
             }
-            for (List.Node cur = oldData[i].getHead(); cur != null; cur = cur.getNext()) {
-                int hash = getHash(cur.getData().getKey());
+            for (Pair pair : oldData[i]) {
+                int hash = getHash(pair.getKey());
                 if (data[hash] == null) {
                     data[hash] = new List();
                 }
-                data[hash].put(cur.getData());
+                data[hash].put(pair);
             }
         }
     }

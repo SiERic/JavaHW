@@ -1,9 +1,11 @@
 package me.sieric.hashtable;
 
+import java.util.Iterator;
+
 /**
  * Linked list to store a pairs of key and value
  */
-public class List {
+public class List implements Iterable<Pair> {
 
     private Node head, tail;
 
@@ -15,7 +17,7 @@ public class List {
     /**
      * Nodes, to iterate over List
      */
-    public class Node {
+    private class Node {
 
         /**
          * Reference to the next Node of the List
@@ -30,36 +32,45 @@ public class List {
             this.data = data;
             next = null;
         }
+    }
 
 
-        /**
-         * Gets reference to the next Node
-         */
-        public Node getNext() {
-            return next;
+    private class ListIterator implements Iterator<Pair> {
+
+        private Node cur;
+        private Node prev = null;
+        private Node prevOfPrev = null;
+
+        public ListIterator() {
+            cur = List.this.head;
         }
 
+        public boolean hasNext() {
+            return cur != null;
+        }
 
-        /**
-         * Gets a pair stored in the Node
-         */
-        public Pair getData() {
+        public Pair next() {
+            Pair data = cur.data;
+            prevOfPrev = prev;
+            prev = cur;
+            cur = cur.next;
             return data;
         }
+
+        public void remove() {
+            if (prev == null) {
+                throw new IllegalStateException();
+            } else if (prevOfPrev == null) {
+                List.this.head = cur;
+            } else {
+                prevOfPrev.next = cur;
+            }
+        }
     }
 
-    /**
-     * Gets reference to the first Node of the List (or null if list is empty)
-     */
-    public Node getHead() {
-        return head;
-    }
-
-    /**
-     * Gets reference to the last Node of the List (or null if list is empty)
-     */
-    public Node getTail() {
-        return tail;
+    @Override
+    public Iterator<Pair> iterator() {
+        return new ListIterator();
     }
 
 
@@ -83,9 +94,11 @@ public class List {
      * @return the Pair with given key or null if there's no such Pair
      */
     public Pair get(String key) {
-        for (Node cur = head; cur != null; cur = cur.next) {
-            if (cur.data.getKey().equals(key)) {
-                return cur.data;
+        ListIterator it = new ListIterator();
+        while (it.hasNext()) {
+            Pair data = it.next();
+            if (data.getKey().equals(key)) {
+                return data;
             }
         }
         return null;
@@ -97,17 +110,13 @@ public class List {
      * @return the Pair with given key or null if there's no such Pair
      */
     public Pair remove(String key) {
-        Node prev = null;
-        for (Node cur = head; cur != null; cur = cur.next) {
-            if (cur.data.getKey().equals(key)) {
-                if (prev == null) {
-                    head = cur.next;
-                } else {
-                    prev.next = cur.next;
-                }
-                return cur.data;
+        ListIterator it = new ListIterator();
+        while (it.hasNext()) {
+            Pair data = it.next();
+            if (data.getKey().equals(key)) {
+                it.remove();
+                return data;
             }
-            prev = cur;
         }
         return null;
     }
