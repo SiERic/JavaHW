@@ -1,7 +1,10 @@
 package me.sieric.trie;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implements the Trie data structure.
@@ -25,7 +28,7 @@ public class Trie implements Serializable {
         private int size;
 
         /** Constructs an empty Node */
-        public Node() {
+        private Node() {
             go = new HashMap<>();
             isTerm = false;
             size = 0;
@@ -35,7 +38,7 @@ public class Trie implements Serializable {
          * Goes by the edge of Trie.
          * If there's no such edge, creates a new Node
          */
-        public Node go(Character symbol) {
+        private Node go(Character symbol) {
             if (!go.containsKey(symbol)) {
                 go.put(symbol, new Node());
             }
@@ -73,7 +76,7 @@ public class Trie implements Serializable {
     }
 
     /** The trie root */
-    Node root;
+    private Node root;
 
     /** Constructs an empty Trie */
     public Trie() {
@@ -84,10 +87,7 @@ public class Trie implements Serializable {
      * Adds a new string to Trie.
      * Returns true if string already exists, false otherwise
      */
-    public boolean add(String element) {
-        if (element == null) {
-            return false;
-        }
+    public boolean add(@NotNull String element) {
         return addFromNode(root, element, 0, true);
     }
 
@@ -115,10 +115,7 @@ public class Trie implements Serializable {
     }
 
     /** Checks if Trie contains a string */
-    public boolean contains(String element) {
-        if (element == null) {
-            return false;
-        }
+    public boolean contains(@NotNull String element) {
         Node cur = root;
         for (int i = 0; i < element.length(); i++) {
             cur = cur.go(element.charAt(i));
@@ -130,10 +127,7 @@ public class Trie implements Serializable {
      * Removes string from Trie.
      * Returns true, if the string existed in the Trie before removal, false otherwise
      */
-    public boolean remove(String element) {
-        if (element == null) {
-            return false;
-        }
+    public boolean remove(@NotNull String element) {
         return addFromNode(root, element, 0, false);
     }
 
@@ -143,10 +137,7 @@ public class Trie implements Serializable {
     }
 
     /** Returns number of Strings in the Trie which start with given prefix */
-    public int howManyStartWithPrefix(String prefix) {
-        if (prefix == null) {
-            return 0;
-        }
+    public int howManyStartWithPrefix(@NotNull String prefix) {
         Node cur = root;
         for (int i = 0; i < prefix.length(); i++) {
             cur = cur.go(prefix.charAt(i));
