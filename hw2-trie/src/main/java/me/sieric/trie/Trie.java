@@ -19,20 +19,13 @@ public class Trie implements Serializable {
     private class Node implements Serializable {
 
         /** HashMap, stored links to ancestors of node */
-        private HashMap<Character, Node> go;
+        private HashMap<Character, Node> go = new HashMap<>();
 
         /** Is node terminal or not */
-        private boolean isTerminal;
+        private boolean isTerminal = false;
 
         /** Number of terminal nodes in subtree (including this node) */
-        private int size;
-
-        /** Constructs an empty Node */
-        private Node() {
-            go = new HashMap<>();
-            isTerminal = false;
-            size = 0;
-        }
+        private int size = 0;
 
         /**
          * Goes by the edge of Trie.
