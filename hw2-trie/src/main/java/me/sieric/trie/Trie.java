@@ -22,7 +22,7 @@ public class Trie implements Serializable {
         private HashMap<Character, Node> go;
 
         /** Is node terminal or not */
-        private boolean isTerm;
+        private boolean isTerminal;
 
         /** Number of terminal nodes in subtree (including this node) */
         private int size;
@@ -30,7 +30,7 @@ public class Trie implements Serializable {
         /** Constructs an empty Node */
         private Node() {
             go = new HashMap<>();
-            isTerm = false;
+            isTerminal = false;
             size = 0;
         }
 
@@ -48,7 +48,7 @@ public class Trie implements Serializable {
         /** Serialize Node into OutputStream */
         private void serialize(OutputStream out) throws IOException {
             ObjectOutputStream stream = new ObjectOutputStream(out);
-            stream.writeBoolean(isTerm);
+            stream.writeBoolean(isTerminal);
             stream.writeInt(size);
             stream.writeInt(go.size());
             stream.flush();
@@ -63,7 +63,7 @@ public class Trie implements Serializable {
         /** Deserialize Node from InputStream */
         private void deserialize(InputStream in) throws IOException {
             ObjectInputStream stream = new ObjectInputStream(in);
-            isTerm = stream.readBoolean();
+            isTerminal = stream.readBoolean();
             size = stream.readInt();
             int goSize = stream.readInt();
             for (int i = 0; i < goSize; i++) {
@@ -96,18 +96,18 @@ public class Trie implements Serializable {
      * a new string element[index:] to the subtree of given node.
      * Return true, if the operation is correct
      */
-    private boolean addFromNode(Node node, String element, int index, boolean toAdd) {
+    private boolean addFromNode(Node node, String element, int index, boolean valueAtTheEndOfThePath) {
         if (element.length() == index) {
-            if (node.isTerm == toAdd) {
+            if (node.isTerminal == valueAtTheEndOfThePath) {
                 return false;
             } else {
-                node.isTerm = toAdd;
-                node.size = toAdd ? 1 : 0;
+                node.isTerminal = valueAtTheEndOfThePath;
+                node.size = valueAtTheEndOfThePath? 1 : 0;
                 return true;
             }
         }
-        if (addFromNode(node.go(element.charAt(index)), element, index + 1, toAdd)) {
-            node.size += toAdd ? 1 : 0;
+        if (addFromNode(node.go(element.charAt(index)), element, index + 1, valueAtTheEndOfThePath)) {
+            node.size += valueAtTheEndOfThePath ? 1 : 0;
             return true;
         } else {
             return false;
@@ -116,11 +116,11 @@ public class Trie implements Serializable {
 
     /** Checks if Trie contains a string */
     public boolean contains(@NotNull String element) {
-        Node cur = root;
+        Node currentNode = root;
         for (int i = 0; i < element.length(); i++) {
-            cur = cur.go(element.charAt(i));
+            currentNode = currentNode.go(element.charAt(i));
         }
-        return cur.isTerm;
+        return currentNode.isTerminal;
     }
 
     /**
@@ -138,11 +138,11 @@ public class Trie implements Serializable {
 
     /** Returns number of Strings in the Trie which start with given prefix */
     public int howManyStartWithPrefix(@NotNull String prefix) {
-        Node cur = root;
+        Node currentNode = root;
         for (int i = 0; i < prefix.length(); i++) {
-            cur = cur.go(prefix.charAt(i));
+            currentNode = currentNode.go(prefix.charAt(i));
         }
-        return cur.size;
+        return currentNode.size;
     }
 
     /** Serialize Trie into OutputStream */
