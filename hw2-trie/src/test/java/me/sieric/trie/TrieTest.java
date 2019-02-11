@@ -111,33 +111,33 @@ class TrieTest {
     }
 
     @Test
-    void TestSerializationOfEmptyTrie() throws IOException {
+    void testSerializationOfEmptyTrie() {
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        t.serialize(buf);
+        assertDoesNotThrow(() -> t.serialize(buf));
         Trie newT = new Trie();
-        newT.deserialize(new ByteArrayInputStream(buf.toByteArray()));
+        assertDoesNotThrow(() -> newT.deserialize(new ByteArrayInputStream(buf.toByteArray())));
         assertEquals(newT.size(), 0);
     }
 
     @Test
-    void TestSerializationOfSmallTrie() throws IOException {
+    void testSerializationOfSmallTrie() {
         t.add("a");
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        t.serialize(buf);
+        assertDoesNotThrow(() -> t.serialize(buf));
         Trie newT = new Trie();
-        newT.deserialize(new ByteArrayInputStream(buf.toByteArray()));
+        assertDoesNotThrow(() -> newT.deserialize(new ByteArrayInputStream(buf.toByteArray())));
         assertEquals(newT.size(), 1);
         assertTrue(newT.contains("a"));
     }
 
 
     @Test
-    void TestSerialization() throws IOException {
+    void testSerialization() {
         fill();
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        t.serialize(buf);
+        assertDoesNotThrow(() -> t.serialize(buf));
         Trie newT = new Trie();
-        newT.deserialize(new ByteArrayInputStream(buf.toByteArray()));
+        assertDoesNotThrow(() -> newT.deserialize(new ByteArrayInputStream(buf.toByteArray())));
         assertTrue(newT.contains("a"));
         assertTrue(newT.contains("ab"));
         assertTrue(newT.contains("ac"));
@@ -145,5 +145,86 @@ class TrieTest {
         assertTrue(newT.contains("Sasha Top"));
         assertTrue(newT.contains("❤️"));
         assertFalse(newT.contains("kek"));
+    }
+
+    @Test
+    void testDeserializeOnly() throws IOException {
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        ObjectOutputStream stream = new ObjectOutputStream(buf);
+
+        stream.writeBoolean(false);
+        stream.writeInt(3);
+        stream.writeInt(1);
+        stream.flush();
+
+        stream.writeChar('a');
+        stream.flush();
+
+        stream = new ObjectOutputStream(buf);
+        stream.writeBoolean(true);
+        stream.writeInt(3);
+        stream.writeInt(2);
+        stream.flush();
+
+        stream.writeChar('b');
+        stream.flush();
+
+        stream = new ObjectOutputStream(buf);
+        stream.writeBoolean(true);
+        stream.writeInt(1);
+        stream.writeInt(0);
+        stream.flush();
+
+        stream.writeChar('c');
+        stream.flush();
+
+        stream = new ObjectOutputStream(buf);
+        stream.writeBoolean(true);
+        stream.writeInt(1);
+        stream.writeInt(0);
+        stream.flush();
+
+
+        assertDoesNotThrow(() -> t.deserialize(new ByteArrayInputStream(buf.toByteArray())));
+        assertEquals(t.size(), 3);
+        assertTrue(t.contains("a"));
+        assertTrue(t.contains("ab"));
+        assertTrue(t.contains("ac"));
+    }
+
+    @Test
+    void testSerializationOnly() throws IOException {
+        t.add("a");
+        t.add("ab");
+        t.add("ac");
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        assertDoesNotThrow(() -> t.serialize(buf));
+        ByteArrayInputStream in = new ByteArrayInputStream(buf.toByteArray());
+        ObjectInputStream stream2, stream3, stream4, stream = new ObjectInputStream(in);
+
+        assertFalse(stream.readBoolean());
+        assertEquals(stream.readInt(), 3);
+        assertEquals(stream.readInt(), 1);
+
+        assertEquals(stream.readChar(), 'a');
+
+        stream2 = new ObjectInputStream(in);
+
+        assertTrue(stream2.readBoolean());
+        assertEquals(stream2.readInt(), 3);
+        assertEquals(stream2.readInt(), 2);
+
+        assertEquals(stream2.readChar(), 'b');
+        stream3 = new ObjectInputStream(in);
+        assertTrue(stream3.readBoolean());
+        assertEquals(stream3.readInt(), 1);
+        assertEquals(stream3.readInt(), 0);
+
+        assertEquals(stream2.readChar(), 'c');
+
+        stream4 = new ObjectInputStream(in);
+        assertTrue(stream4.readBoolean());
+        assertEquals(stream4.readInt(), 1);
+        assertEquals(stream4.readInt(), 0);
     }
 }

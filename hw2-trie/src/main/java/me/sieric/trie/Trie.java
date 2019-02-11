@@ -55,7 +55,6 @@ public class Trie implements Serializable {
                 stream.flush();
                 entry.getValue().serialize(out);
             }
-            stream.flush();
         }
 
         /**
