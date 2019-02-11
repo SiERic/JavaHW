@@ -78,12 +78,7 @@ public class Trie implements Serializable {
     }
 
     /** The trie root */
-    private Node root;
-
-    /** Constructs an empty Trie */
-    public Trie() {
-        root = new Node();
-    }
+    private Node root = new Node();
 
     /**
      * Adds a new string to Trie.
