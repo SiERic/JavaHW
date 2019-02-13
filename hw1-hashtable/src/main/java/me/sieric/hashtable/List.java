@@ -26,7 +26,6 @@ public class List implements Iterable<Pair> {
 
     /**
      * Gets a Pair from List by key
-     *
      * @return the Pair with given key or null if there's no such Pair
      */
     public Pair get(String key) {
@@ -42,7 +41,6 @@ public class List implements Iterable<Pair> {
 
     /**
      * Removes a Pair from List by key
-     *
      * @return the Pair with given key or null if there's no such Pair
      */
     public Pair remove(String key) {
@@ -67,14 +65,13 @@ public class List implements Iterable<Pair> {
     private class Node {
 
         /** Reference to the next Node of the List */
-        private Node next;
+        private Node next = null;
 
         /** Pair stored in the Node */
         private Pair data;
 
         private Node(Pair data) {
             this.data = data;
-            next = null;
         }
     }
 
@@ -99,7 +96,6 @@ public class List implements Iterable<Pair> {
 
         /**
          * Advance one position further
-         *
          * @return Pair in position before advance
          */
         public Pair next() {

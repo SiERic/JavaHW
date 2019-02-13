@@ -6,16 +6,19 @@ package me.sieric.hashtable;
  */
 public class HashTable {
 
-    /** Lists with Pairs with equal hash */
-
     private static final int INITIAL_CAPACITY = 2;
 
     private int capacity = INITIAL_CAPACITY;
     private int size = 0;
 
+    /** Lists with Pairs with equal hash */
     private List[] data = new List[capacity];
 
-    /** Gets string's hash */
+    /**
+     * Gets string's hash
+     * @return hash of given string key
+     * @throws IllegalArgumentException if string is null
+     */
     protected int getHash(String key) throws IllegalArgumentException {
         if (key == null) {
             throw new IllegalArgumentException("Key must be not null");
@@ -25,14 +28,17 @@ public class HashTable {
 
     /**
      * Gets number of elements stored in HashTable
-     *
      * @return number of keys in HashTable
      */
     public int size() {
         return size;
     }
 
-    /** Returns true if HashTable contains a key or false otherwise */
+    /**
+     * Checks if Hashtable contains a string
+     * @return true if HashTable contains a key or false otherwise
+     * @throws IllegalArgumentException if string is null
+     */
     public boolean contains(String key) throws IllegalArgumentException {
         int hash = getHash(key);
         return (data[hash] != null && data[hash].get(key) != null);
@@ -40,8 +46,8 @@ public class HashTable {
 
     /**
      * Gets a value from HashTable by key
-     *
      * @return value by key or null if there's no such key in HashTable
+     * @throws IllegalArgumentException if string is null
      */
     public String get(String key) throws IllegalArgumentException {
         int hash = getHash(key);
@@ -58,8 +64,8 @@ public class HashTable {
     /**
      * Puts a value by key into HashTable
      * If hashtable previously contained the mapping for key, the old value is replaced (and returned)
-     *
      * @return previous value by key or null if there's no such key in HashTable
+     * @throws IllegalArgumentException if string is null
      */
     public String put(String key, String value) throws IllegalArgumentException {
         if (value == null) {
@@ -86,8 +92,8 @@ public class HashTable {
 
     /**
      * Removes a key with value from HashTable
-     *
      * @return value by key or null if there's no such key in HashTable
+     * @throws IllegalArgumentException if string is null
      */
     public String remove(String key) throws IllegalArgumentException {
         int hash = getHash(key);
