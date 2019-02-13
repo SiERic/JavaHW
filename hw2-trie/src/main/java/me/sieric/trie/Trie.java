@@ -15,67 +15,6 @@ import java.util.Map;
  */
 public class Trie implements Serializable {
 
-    /** Class to store trie nodes */
-    private class Node implements Serializable {
-
-        /** HashMap, stored links to ancestors of node */
-        private HashMap<Character, Node> go = new HashMap<>();
-
-        /** Is node terminal or not */
-        private boolean isTerminal = false;
-
-        /** Number of terminal nodes in subtree (including this node) */
-        private int size = 0;
-
-        /**
-         * Goes by the edge of Trie.
-         * If there's no such edge, creates a new Node
-         */
-        private Node go(Character symbol) {
-            if (!go.containsKey(symbol)) {
-                go.put(symbol, new Node());
-            }
-            return go.get(symbol);
-        }
-
-
-        /**
-         * Serialize Node into OutputStream
-         * @param out - OutputStream to write into
-         * @throws IOException if writing into stream failed
-         */
-        private void serialize(OutputStream out) throws IOException {
-            ObjectOutputStream stream = new ObjectOutputStream(out);
-            stream.writeBoolean(isTerminal);
-            stream.writeInt(size);
-            stream.writeInt(go.size());
-            stream.flush();
-            for (Map.Entry<Character, Node> entry : go.entrySet()) {
-                stream.writeChar(entry.getKey());
-                stream.flush();
-                entry.getValue().serialize(out);
-            }
-        }
-
-        /**
-         * Deserialize Node from InputStream
-         * @param in - InputStream to read from
-         * @throws IOException if reading from stream failed
-         */
-        private void deserialize(InputStream in) throws IOException {
-            ObjectInputStream stream = new ObjectInputStream(in);
-            isTerminal = stream.readBoolean();
-            size = stream.readInt();
-            int goSize = stream.readInt();
-            for (int i = 0; i < goSize; i++) {
-                Character symbol = stream.readChar();
-                Node node = new Node();
-                node.deserialize(in);
-                go.put(symbol, node);
-            }
-        }
-    }
-
     /** The trie root */
     private Node root = new Node();
 
@@ -175,6 +114,66 @@ public class Trie implements Serializable {
      */
     void deserialize(InputStream in) throws IOException {
         root.deserialize(in);
+    }
+
+    /** Class to store trie nodes */
+    private class Node implements Serializable {
+
+        /** HashMap, stored links to ancestors of node */
+        private HashMap<Character, Node> go = new HashMap<>();
+
+        /** Is node terminal or not */
+        private boolean isTerminal = false;
+
+        /** Number of terminal nodes in subtree (including this node) */
+        private int size = 0;
+
+        /**
+         * Goes by the edge of Trie.
+         * If there's no such edge, creates a new Node
+         */
+        private Node go(Character symbol) {
+            if (!go.containsKey(symbol)) {
+                go.put(symbol, new Node());
+            }
+            return go.get(symbol);
+        }
+
+        /**
+         * Serialize Node into OutputStream
+         * @param out - OutputStream to write into
+         * @throws IOException if writing into stream failed
+         */
+        private void serialize(OutputStream out) throws IOException {
+            ObjectOutputStream stream = new ObjectOutputStream(out);
+            stream.writeBoolean(isTerminal);
+            stream.writeInt(size);
+            stream.writeInt(go.size());
+            stream.flush();
+            for (Map.Entry<Character, Node> entry : go.entrySet()) {
+                stream.writeChar(entry.getKey());
+                stream.flush();
+                entry.getValue().serialize(out);
+            }
+        }
+
+        /**
+         * Deserialize Node from InputStream
+         * @param in - InputStream to read from
+         * @throws IOException if reading from stream failed
+         */
+        private void deserialize(InputStream in) throws IOException {
+            ObjectInputStream stream = new ObjectInputStream(in);
+            isTerminal = stream.readBoolean();
+            size = stream.readInt();
+            int goSize = stream.readInt();
+            for (int i = 0; i < goSize; i++) {
+                Character symbol = stream.readChar();
+                Node node = new Node();
+                node.deserialize(in);
+                go.put(symbol, node);
+            }
+        }
     }
 
 }
