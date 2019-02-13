@@ -30,17 +30,17 @@ public class List implements Iterable<Pair> {
      */
     private class ListIterator implements Iterator<Pair> {
 
-        private Node cur;
-        private Node prev = null;
-        private Node prevOfPrev = null;
+        private Node current;
+        private Node previous = null;
+        private Node previousOfPrevious = null;
 
         public ListIterator() {
-            cur = List.this.head;
+            current = List.this.head;
         }
 
         /** Checks if whether there is an element to advance */
         public boolean hasNext() {
-            return cur != null;
+            return current != null;
         }
 
         /**
@@ -49,21 +49,21 @@ public class List implements Iterable<Pair> {
          * @return Pair in position before advance
          */
         public Pair next() {
-            Pair data = cur.data;
-            prevOfPrev = prev;
-            prev = cur;
-            cur = cur.next;
+            Pair data = current.data;
+            previousOfPrevious = previous;
+            previous = current;
+            current = current.next;
             return data;
         }
 
         /** Remove the previous element */
         public void remove() {
-            if (prev == null) {
+            if (previous == null) {
                 throw new IllegalStateException();
-            } else if (prevOfPrev == null) {
-                List.this.head = cur;
+            } else if (previousOfPrevious == null) {
+                List.this.head = current;
             } else {
-                prevOfPrev.next = cur;
+                previousOfPrevious.next = current;
             }
         }
     }
