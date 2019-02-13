@@ -5,13 +5,8 @@ import java.util.Iterator;
 /** Linked list to store a pairs of key and value */
 public class List implements Iterable<Pair> {
 
-    private Node head;
-    private Node tail;
-
-    public List() {
-        head = null;
-        tail = null;
-    }
+    private Node head = null;
+    private Node tail = null;
 
     /** Nodes, to store pairs in the List */
     private class Node {

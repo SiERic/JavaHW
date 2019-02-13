@@ -7,18 +7,13 @@ package me.sieric.hashtable;
 public class HashTable {
 
     /** Lists with Pairs with equal hash */
-    private List[] data;
 
     private static final int INITIAL_CAPACITY = 2;
 
     private int capacity = INITIAL_CAPACITY;
-    private int size;
+    private int size = 0;
 
-    /** Creates a HashTable with base capacity */
-    public HashTable() {
-        data = new List[capacity];
-        size = 0;
-    }
+    private List[] data = new List[capacity];
 
     /** Gets string's hash */
     protected int getHash(String key) throws IllegalArgumentException {
