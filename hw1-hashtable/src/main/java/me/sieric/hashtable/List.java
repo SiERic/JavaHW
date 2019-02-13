@@ -8,6 +8,61 @@ public class List implements Iterable<Pair> {
     private Node head = null;
     private Node tail = null;
 
+    /** Get the List Iterator */
+    public Iterator<Pair> iterator() {
+        return new ListIterator();
+    }
+
+    /** Puts a new Pair into the end of the List */
+    public void put(Pair data) {
+        if (head == null) {
+            head = new Node(data);
+            tail = head;
+        } else {
+            tail.next = new Node(data);
+            tail = tail.next;
+        }
+    }
+
+    /**
+     * Gets a Pair from List by key
+     *
+     * @return the Pair with given key or null if there's no such Pair
+     */
+    public Pair get(String key) {
+        ListIterator it = new ListIterator();
+        while (it.hasNext()) {
+            Pair data = it.next();
+            if (data.getKey().equals(key)) {
+                return data;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Removes a Pair from List by key
+     *
+     * @return the Pair with given key or null if there's no such Pair
+     */
+    public Pair remove(String key) {
+        ListIterator it = new ListIterator();
+        while (it.hasNext()) {
+            Pair data = it.next();
+            if (data.getKey().equals(key)) {
+                it.remove();
+                return data;
+            }
+        }
+        return null;
+    }
+
+    /** Clears List */
+    public void clear() {
+        head = null;
+        tail = null;
+    }
+
     /** Nodes, to store pairs in the List */
     private class Node {
 
@@ -22,7 +77,6 @@ public class List implements Iterable<Pair> {
             next = null;
         }
     }
-
 
     /**
      * Iterator to iterate through the List.
@@ -66,61 +120,5 @@ public class List implements Iterable<Pair> {
                 previousOfPrevious.next = current;
             }
         }
-    }
-
-    /** Get the List Iterator */
-    public Iterator<Pair> iterator() {
-        return new ListIterator();
-    }
-
-    /** Puts a new Pair into the end of the List */
-    public void put(Pair data) {
-        if (head == null) {
-            head = new Node(data);
-            tail = head;
-        } else {
-            tail.next = new Node(data);
-            tail = tail.next;
-        }
-    }
-
-
-    /**
-     * Gets a Pair from List by key
-     *
-     * @return the Pair with given key or null if there's no such Pair
-     */
-    public Pair get(String key) {
-        ListIterator it = new ListIterator();
-        while (it.hasNext()) {
-            Pair data = it.next();
-            if (data.getKey().equals(key)) {
-                return data;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Removes a Pair from List by key
-     *
-     * @return the Pair with given key or null if there's no such Pair
-     */
-    public Pair remove(String key) {
-        ListIterator it = new ListIterator();
-        while (it.hasNext()) {
-            Pair data = it.next();
-            if (data.getKey().equals(key)) {
-                it.remove();
-                return data;
-            }
-        }
-        return null;
-    }
-
-    /** Clears List */
-    public void clear() {
-        head = null;
-        tail = null;
     }
 }
