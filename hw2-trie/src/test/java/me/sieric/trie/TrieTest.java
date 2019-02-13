@@ -130,7 +130,6 @@ class TrieTest {
         assertTrue(newT.contains("a"));
     }
 
-
     @Test
     void testSerialization() {
         fill();
@@ -183,7 +182,6 @@ class TrieTest {
         stream.writeInt(1);
         stream.writeInt(0);
         stream.flush();
-
 
         assertDoesNotThrow(() -> t.deserialize(new ByteArrayInputStream(buf.toByteArray())));
         assertEquals(t.size(), 3);
