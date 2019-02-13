@@ -26,7 +26,6 @@ class ListTest {
         }
     }
 
-
     @Test
     void testListIterator() {
         Iterator<Pair> it = list.iterator();

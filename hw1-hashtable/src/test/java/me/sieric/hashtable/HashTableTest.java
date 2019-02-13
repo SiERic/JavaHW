@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HashTableTest {
 
-
     private HashTable ht;
 
     @BeforeEach
@@ -46,7 +45,6 @@ class HashTableTest {
         assertFalse(ht.contains("a"));
         assertFalse(ht.contains("b"));
     }
-
 
     @Test
     void testGet() {
