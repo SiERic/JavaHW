@@ -1,6 +1,5 @@
 language: java
 os: linux
 jdk: oraclejdk11
-script: cd $PROJECT_DIR && ./gradlew build
 services:
  - mongodb
