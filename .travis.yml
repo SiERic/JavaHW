@@ -2,4 +2,10 @@ language: java
 os: linux
 jdk: oraclejdk11
 services:
- - mongodb
+    - mongodb
+env:
+    - PROJECT_DIR=hw1-hashtable
+    - PROJECT_DIR=hw2-trie
+    - PROJECT_DIR=hw3-treeset
+    - PROJECT_DIR=hw4-db
+script: cd $PROJECT_DIR && ./gradlew build
