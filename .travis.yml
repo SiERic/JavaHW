@@ -1,0 +1,8 @@
+language: java
+os: linux
+jdk: oraclejdk11
+services:
+    - mongodb
+env:
+    - PROJECT_DIR=hw2-trie
+script: cd $PROJECT_DIR && ./gradlew build
