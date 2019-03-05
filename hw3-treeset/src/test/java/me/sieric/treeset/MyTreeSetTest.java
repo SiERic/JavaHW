@@ -5,18 +5,18 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MyTreeSetTest {
-
-    MyTreeSet<Integer> tree;
+    private MyTreeSet<Integer> tree;
+    private MyTreeSet<Integer> emptyTree;
 
     @BeforeEach
     void setUp() {
         tree = new MyTreeSet<>();
+        emptyTree = new MyTreeSet<>();
         for (int i = 0; i < 10; ++i) {
             tree.add((15 + i * i) % 30);
         }
@@ -36,7 +36,6 @@ class MyTreeSetTest {
         assertTrue(tree.add(2));
         assertEquals(tree.size(), 10);
 
-        MyTreeSet<String> emptyTree = new MyTreeSet<>();
         assertEquals(emptyTree.size(), 0);
     }
 
@@ -58,16 +57,15 @@ class MyTreeSetTest {
         assertTrue(tree.remove(4));
         assertThrows(ClassCastException.class, () -> tree.remove("kek"));
 
-        MyTreeSet<String> emptyTree = new MyTreeSet<>();
         assertFalse(emptyTree.remove("kek"));
-        emptyTree.add("kek");
-        assertTrue(emptyTree.remove("kek"));
+        emptyTree.add(12);
+        assertTrue(emptyTree.remove(12));
     }
 
 
     @Test
     void testIterator() {
-        Iterator<Integer> iterator = tree.iterator();
+        var iterator = tree.iterator();
         assertTrue(iterator.hasNext());
         assertEquals(iterator.next(), (Integer) 1);
 
@@ -81,7 +79,7 @@ class MyTreeSetTest {
 
     @Test
     void testDescendingIterator() {
-        Iterator<Integer> iterator = tree.descendingIterator();
+        var iterator = tree.descendingIterator();
         assertTrue(iterator.hasNext());
         assertEquals(iterator.next(), (Integer) 24);
 
@@ -96,11 +94,13 @@ class MyTreeSetTest {
     @Test
     void testFirst() {
         assertEquals(tree.first(), (Integer) 1);
+        assertNull(emptyTree.first());
     }
 
     @Test
     void testLast() {
         assertEquals(tree.last(), (Integer) 24);
+        assertNull(emptyTree.last());
     }
 
     @Test
@@ -135,14 +135,13 @@ class MyTreeSetTest {
     void testClear() {
         tree.clear();
         assertEquals(tree.size(), 0);
-        Iterator<Integer> iterator = tree.iterator();
+        var iterator = tree.iterator();
         assertFalse(iterator.hasNext());
     }
 
-
     @Test
     void testTreeSetUsingComparator() {
-        MyTreeSet<Integer> cmpTree = new MyTreeSet(Comparator.comparingInt(a -> (int) a % 10));
+        var cmpTree = new MyTreeSet<>(Comparator.comparingInt(a -> (int) a % 10));
         assertTrue(cmpTree.add(10));
         assertTrue(cmpTree.add(2));
         assertTrue(cmpTree.add(34));
@@ -150,18 +149,18 @@ class MyTreeSetTest {
         assertTrue(cmpTree.add(51));
         cmpTree.add(22);
         assertTrue(cmpTree.contains(1));
-        assertEquals(cmpTree.floor(7), (Integer) 34);
+        assertEquals(cmpTree.floor(7), 34);
     }
 
     @Test
     void testDescendingSet() {
-        MyTreeSet<Integer> descendingTree = tree.descendingSet();
+        var descendingTree = tree.descendingSet();
         assertTrue(descendingTree.add(3));
         assertTrue(tree.contains(3));
         assertEquals(descendingTree.last(), (Integer) 1);
         assertEquals(descendingTree.floor(8), (Integer) 10);
-        Iterator<Integer> iterator = tree.iterator();
-        Iterator<Integer> descendingDescendingIterator = descendingTree.descendingIterator();
+        var iterator = tree.iterator();
+        var descendingDescendingIterator = descendingTree.descendingIterator();
         while (iterator.hasNext() && descendingDescendingIterator.hasNext()) {
             assertEquals(iterator.next(), descendingDescendingIterator.next());
         }
@@ -172,7 +171,7 @@ class MyTreeSetTest {
 
     @Test
     void testIteratorInvalidation() {
-        Iterator<Integer> iterator = tree.iterator();
+        var iterator = tree.iterator();
         assertTrue(tree.add(5));
         assertThrows(ConcurrentModificationException.class, iterator::hasNext);
         assertThrows(ConcurrentModificationException.class, iterator::next);
@@ -180,5 +179,11 @@ class MyTreeSetTest {
         assertTrue(tree.remove(1));
         assertThrows(ConcurrentModificationException.class, iterator::hasNext);
         assertThrows(ConcurrentModificationException.class, iterator::next);
+        assertTrue(tree.add(42));
+        iterator = tree.iterator();
+        tree.clear();
+        assertThrows(ConcurrentModificationException.class, iterator::hasNext);
+        assertThrows(ConcurrentModificationException.class, iterator::next);
     }
+
 }

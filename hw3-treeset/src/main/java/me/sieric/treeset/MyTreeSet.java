@@ -13,7 +13,7 @@ import java.util.*;
 public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E> {
 
     /** Binary search tree to store elements */
-    private Tree<E> tree;
+    private Tree tree;
     /** Flag, indicates if order is descending*/
     private boolean isAscending = true;
 
@@ -26,7 +26,7 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
      */
     @SuppressWarnings("unchecked")
     public MyTreeSet() {
-        tree = new Tree<>((a, other) -> ((Comparable) a).compareTo(other));
+        tree = new Tree((a, other) -> ((Comparable<? super E>) a).compareTo(other));
     }
 
     /**
@@ -37,7 +37,7 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
      * @param comparator - the comparator that will be used to order this set. If null, the natural ordering of the elements will be used
      */
     public MyTreeSet(Comparator<? super E> comparator) {
-        tree = new Tree<>(comparator);
+        tree = new Tree(comparator);
     }
 
     /**
@@ -49,39 +49,31 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
      */
     @Override
     public MyTreeSet<E> descendingSet() {
-        MyTreeSet<E> newts = new MyTreeSet<>();
-        newts.tree = this.tree;
-        newts.isAscending = false;
-        return newts;
+        MyTreeSet<E> newTreeSet = new MyTreeSet<>();
+        newTreeSet.tree = this.tree;
+        newTreeSet.isAscending = false;
+        return newTreeSet;
     }
 
     /**
      * Returns an iterator over the elements in this set in ascending order.
-     * The functions add and remove invalidate iterators.
+     * The functions add, remove and clear invalidate iterators.
      * @return an iterator over the elements in this set in ascending order
      */
     @NotNull
     @Override
     public Iterator<E> iterator() {
-        if (isAscending) {
-            return tree.ascendingIterator();
-        } else {
-            return tree.descendingIterator();
-        }
+        return (isAscending ? tree.ascendingIterator() : tree.descendingIterator());
     }
 
     /**
      * Returns an iterator over the elements in this set in descending order.
-     * The functions add and remove invalidate iterators.
+     * The functions add, remove and clear invalidate iterators.
      * @return an iterator over the elements in this set in descending order
      */
     @Override
     public Iterator<E> descendingIterator() {
-        if (isAscending) {
-            return tree.descendingIterator();
-        } else {
-            return tree.ascendingIterator();
-        }
+        return (isAscending ? tree.descendingIterator() : tree.ascendingIterator());
     }
 
     /**
@@ -95,30 +87,22 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
 
     /**
      * Returns the first (lowest) element currently in this set
-     * @return the first (lowest) element currently in this set
+     * @return the first (lowest) element currently in this set or null if tree is empty
      */
     @Override
     @Nullable
     public E first() {
-        if (isAscending) {
-            return tree.first();
-        } else {
-            return tree.last();
-        }
+        return (isAscending ? tree.first() : tree.last());
     }
 
     /**
      * Returns the last (highest) element currently in this set
-     * @return the last (highest) element currently in this set
+     * @return the last (highest) element currently in this set or null if tree is empty
      */
     @Override
     @Nullable
     public E last() {
-        if (isAscending) {
-            return tree.last();
-        } else {
-            return tree.first();
-        }
+        return isAscending ? tree.last() : tree.first();
     }
 
     /**
@@ -127,12 +111,8 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
      * @return the greatest element less than e, or null if there is no such element
      */
     @Override @Nullable
-    public E lower(E e) {
-        if (isAscending) {
-            return tree.lower(e);
-        } else {
-            return tree.higher(e);
-        }
+    public E lower(@Nullable E e) {
+        return isAscending ? tree.lower(e) : tree.higher(e);
     }
 
     /**
@@ -141,12 +121,8 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
      * @return the greatest element less than or equal to e, or null if there is no such element
      */
     @Override @Nullable
-    public E floor(E e) {
-        if (isAscending) {
-            return tree.floor(e);
-        } else {
-            return tree.ceiling(e);
-        }
+    public E floor(@Nullable E e) {
+        return isAscending ? tree.floor(e) : tree.ceiling(e);
     }
 
     /**
@@ -155,12 +131,8 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
      * @return the least element greater than or equal to e, or null if there is no such element
      */
     @Override @Nullable
-    public E ceiling(E e) {
-        if (isAscending) {
-            return tree.ceiling(e);
-        } else {
-            return tree.floor(e);
-        }
+    public E ceiling(@Nullable E e) {
+        return isAscending ? tree.ceiling(e) : tree.floor(e);
     }
 
     /**
@@ -169,12 +141,8 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
      * @return the least element greater than e, or null if there is no such element
      */
     @Override @Nullable
-    public E higher(E e) {
-        if (isAscending) {
-            return tree.higher(e);
-        } else {
-            return tree.lower(e);
-        }
+    public E higher(@Nullable E e) {
+        return isAscending ? tree.higher(e) : tree.lower(e);
     }
 
     /**
@@ -185,7 +153,7 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
      * @return true if this set did not already contain the specified element
      */
     @Override
-    public boolean add(E e) {
+    public boolean add(@Nullable E e) {
         return tree.add(e);
     }
 
@@ -199,20 +167,18 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
      * @throws ClassCastException if can't cast o to E
      */
     @Override
-    public boolean remove(Object o) throws ClassCastException {
+    public boolean remove(@Nullable Object o) throws ClassCastException {
         return tree.remove(o);
     }
 
-
     /**
-     /**
-     * Returns true if this set contains the specified element.     *
+     * Returns true if this set contains the specified element.
      * @param o - element whose presence in this set is to be tested
      * @return {true} if this set contains the specified element
      * @throws ClassCastException if can't cast o to E
      */
     @Override
-    public boolean contains(Object o) throws ClassCastException {
+    public boolean contains(@Nullable Object o) throws ClassCastException {
         return tree.contains(o);
     }
 
@@ -224,9 +190,8 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
 
     /**
      * Binary Search Tree
-     * @param <E> - type of stored keys
      */
-    private static class Tree<E> {
+    private class Tree {
 
         private Node root = null;
         private int size = 0;
@@ -239,13 +204,13 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             Node parent;
             E key;
 
-            Node(E key, Node parent) {
+            Node(@NotNull E key, @Nullable Node parent) {
                 this.key = key;
                 this.parent = parent;
             }
         }
 
-        private Tree(Comparator<? super E> comparator) {
+        private Tree(@NotNull Comparator<? super E> comparator) {
             this.comparator = comparator;
         }
 
@@ -425,7 +390,10 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             return new DescendingIterator();
         }
         @SuppressWarnings("unchecked")
-        private boolean contains(Object o) throws ClassCastException {
+        private boolean contains(@Nullable Object o) throws ClassCastException {
+            if (o == null) {
+                return false;
+            }
             Node node = root;
             while (node != null) {
                 int cmpResult = comparator.compare(node.key, (E) o);
@@ -440,9 +408,11 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             return false;
         }
 
-
         @Nullable
-        private E lower(@NotNull E e) {
+        private E lower(@Nullable E e) {
+            if (e == null) {
+                return null;
+            }
             Node node = lowerBound(e);
             if (node == null) {
                 return last();
@@ -455,7 +425,10 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
         }
 
         @Nullable
-        private E floor(@NotNull E e) {
+        private E floor(@Nullable E e) {
+            if (e == null) {
+                return null;
+            }
             Node node = upperBound(e);
             if (node == null) {
                 return last();
@@ -468,18 +441,27 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
         }
 
         @Nullable
-        private E higher(@NotNull E e) {
+        private E higher(@Nullable E e) {
+            if (e == null) {
+                return null;
+            }
             Node node = upperBound(e);
             return getKey(node);
         }
 
         @Nullable
-        private E ceiling(@NotNull E e) {
+        private E ceiling(@Nullable E e) {
+            if (e == null) {
+                return null;
+            }
             Node node = lowerBound(e);
             return getKey(node);
         }
 
-        private boolean add(@NotNull E e) {
+        private boolean add(@Nullable E e) {
+            if (e == null) {
+                return false;
+            }
             if (root == null) {
                 root = new Node(e, null);
                 size++;
@@ -509,7 +491,7 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
         }
 
         @SuppressWarnings("unchecked")
-        private boolean remove(@NotNull Object o) throws ClassCastException {
+        private boolean remove(@Nullable Object o) throws ClassCastException {
             if (!contains(o)) {
                 return false;
             }
@@ -568,6 +550,7 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
         private void clear() {
             root = null;
             size = 0;
+            version++;
         }
     }
 
