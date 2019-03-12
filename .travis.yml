@@ -5,4 +5,5 @@ services:
     - mongodb
 env:
     - PROJECT_DIR=hw2-trie
+    - PROJECT_DIR=hw5-reflector
 script: cd $PROJECT_DIR && ./gradlew build
