@@ -1,6 +1,5 @@
 package me.sieric.treeset;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,36 +16,17 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
     /** Flag, indicates if order is descending*/
     private boolean isAscending = true;
 
-    /**
-     * Constructs a new, empty tree set, sorted according to the natural ordering of its elements.
-     * All elements inserted into the set must implement the Comparable interface.
-     * Furthermore, all such elements must be mutually comparable: e1.compareTo(e2) must not throw a ClassCastException for any elements e1 and e2 in the set.
-     * If the user attempts to add an element to the set that violates this constraint
-     * (for example, the user attempts to add a string element to a set whose elements are integers), the add call will throw a ClassCastException
-     */
-    @SuppressWarnings("unchecked")
+    /** {@link java.util.TreeSet#TreeSet()} */
     public MyTreeSet() {
-        tree = new Tree((a, other) -> ((Comparable<? super E>) a).compareTo(other));
+        tree = new Tree(null);
     }
 
-    /**
-     * Constructs a new, empty tree set, sorted according to the specified comparator.
-     * All elements inserted into the set must be mutually comparable by the specified comparator:
-     * comparator.compare(e1, e2) must not throw a ClassCastException for any elements e1 and e2 in the set.
-     * If the user attempts to add an element to the set that violates this constraint, the add call will throw a ClassCastException
-     * @param comparator - the comparator that will be used to order this set. If null, the natural ordering of the elements will be used
-     */
+    /** {@link TreeSet#TreeSet(java.util.Comparator)} */
     public MyTreeSet(Comparator<? super E> comparator) {
         tree = new Tree(comparator);
     }
 
-    /**
-     * Returns a reverse order view of the elements contained in this set.
-     * The descending set is backed by this set, so changes to the set are reflected in the descending set, and vice-versa.
-     * If either set is modified while an iteration over either set is in progress (except through the iterator's own remove operation),
-     * the results of the iteration are undefined.
-     * @return a reverse order view of this set
-     */
+    /** {@link TreeSet#descendingSet()} */
     @Override
     public MyTreeSet<E> descendingSet() {
         MyTreeSet<E> newTreeSet = new MyTreeSet<>();
@@ -55,134 +35,79 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
         return newTreeSet;
     }
 
-    /**
-     * Returns an iterator over the elements in this set in ascending order.
-     * The functions add, remove and clear invalidate iterators.
-     * @return an iterator over the elements in this set in ascending order
-     */
-    @NotNull
-    @Override
+    /** {@link TreeSet#iterator()} */
+    @NotNull @Override
     public Iterator<E> iterator() {
         return (isAscending ? tree.ascendingIterator() : tree.descendingIterator());
     }
 
-    /**
-     * Returns an iterator over the elements in this set in descending order.
-     * The functions add, remove and clear invalidate iterators.
-     * @return an iterator over the elements in this set in descending order
-     */
+    /** {@link TreeSet#descendingIterator()} */
     @Override
     public Iterator<E> descendingIterator() {
         return (isAscending ? tree.descendingIterator() : tree.ascendingIterator());
     }
 
-    /**
-     * Returns the number of elements in this set (its cardinality)
-     * @return the number of elements in this set (its cardinality)
-     */
+    /** {@link TreeSet#size()} */
     @Override
     public int size() {
         return tree.size();
     }
 
-    /**
-     * Returns the first (lowest) element currently in this set
-     * @return the first (lowest) element currently in this set or null if tree is empty
-     */
-    @Override
-    @Nullable
-    public E first() {
+    /** {@link TreeSet#first()} */
+    @Override @Nullable
+    public E first() throws NoSuchElementException {
         return (isAscending ? tree.first() : tree.last());
     }
 
-    /**
-     * Returns the last (highest) element currently in this set
-     * @return the last (highest) element currently in this set or null if tree is empty
-     */
-    @Override
-    @Nullable
-    public E last() {
-        return isAscending ? tree.last() : tree.first();
+    /** {@link TreeSet#last()} */
+    @Override @Nullable
+    public E last() throws NoSuchElementException {
+        return (isAscending ? tree.last() : tree.first());
     }
 
-    /**
-     * Returns the greatest element in this set strictly less than the given element, or null if there is no such element
-     * @param e - the value to match
-     * @return the greatest element less than e, or null if there is no such element
-     */
+    /** {@link TreeSet#lower(java.lang.Object)} */
     @Override @Nullable
     public E lower(@Nullable E e) {
         return isAscending ? tree.lower(e) : tree.higher(e);
     }
 
-    /**
-     * Returns the greatest element in this set less than or equal to the given element, or null if there is no such element
-     * @param e - the value to match
-     * @return the greatest element less than or equal to e, or null if there is no such element
-     */
+    /** {@link TreeSet#floor(java.lang.Object)} */
     @Override @Nullable
     public E floor(@Nullable E e) {
         return isAscending ? tree.floor(e) : tree.ceiling(e);
     }
 
-    /**
-     * Returns the least element in this set greater than or equal to the given element, or null if there is no such element
-     * @param e - the value to match
-     * @return the least element greater than or equal to e, or null if there is no such element
-     */
+    /** {@link TreeSet#ceiling(java.lang.Object)} */
     @Override @Nullable
     public E ceiling(@Nullable E e) {
         return isAscending ? tree.ceiling(e) : tree.floor(e);
     }
 
-    /**
-     * Returns the least element in this set strictly greater than the given element, or null if there is no such element
-     * @param e - the value to match
-     * @return the least element greater than e, or null if there is no such element
-     */
+    /** {@link TreeSet#higher(java.lang.Object)} */
     @Override @Nullable
     public E higher(@Nullable E e) {
         return isAscending ? tree.higher(e) : tree.lower(e);
     }
 
-    /**
-     * Adds the specified element to this set if it is not already present.
-     * More formally, adds the specified element e to this set if the set contains no element e2 such that (e==null ? e2==null : e.equals(e2)).
-     * If this set already contains the element, the call leaves the set unchanged and returns false
-     * @param e - element to be added to this set
-     * @return true if this set did not already contain the specified element
-     */
+    /** {@link java.util.TreeSet#add(java.lang.Object)} */
     @Override
     public boolean add(@Nullable E e) {
         return tree.add(e);
     }
 
-    /**
-     * Removes the specified element from this set if it is present.
-     * More formally, removes an element e such that (o==null ? e==null : o.equals(e)), if this set contains such an element.
-     * Returns true if this set contained the element (or equivalently, if this set changed as a result of the call).
-     * (This set will not contain the element once the call returns.)
-     * @param o - object to be removed from this set, if present
-     * @return true if this set contained the specified element
-     * @throws ClassCastException if can't cast o to E
-     */
+    /** {@link TreeSet#remove(java.lang.Object)} */
     @Override
     public boolean remove(@Nullable Object o) throws ClassCastException {
         return tree.remove(o);
     }
 
-    /**
-     * Returns true if this set contains the specified element.
-     * @param o - element whose presence in this set is to be tested
-     * @return {true} if this set contains the specified element
-     * @throws ClassCastException if can't cast o to E
-     */
+    /** {@link java.util.TreeSet#contains(java.lang.Object)} */
     @Override
     public boolean contains(@Nullable Object o) throws ClassCastException {
         return tree.contains(o);
     }
 
-    /** Removes all of the elements from this set. The set will be empty after this call returns */
+    /** {@link TreeSet#clear()} */
     @Override
     public void clear() {
         tree.clear();
@@ -204,58 +129,199 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             Node parent;
             E key;
 
-            Node(@NotNull E key, @Nullable Node parent) {
+            Node(E key, @Nullable Node parent) {
                 this.key = key;
                 this.parent = parent;
             }
         }
 
-        private Tree(@NotNull Comparator<? super E> comparator) {
+        private Tree(Comparator<? super E> comparator) {
             this.comparator = comparator;
         }
 
-        @Nullable
-        private Node lowerBound(@NotNull E key) {
-            Node node = root;
-            Node result = null;
+        private int size() {
+            return size;
+        }
 
+        private E first() throws NoSuchElementException {
+            if (size == 0) {
+                throw new NoSuchElementException();
+            }
+            return getKey(firstNode());
+        }
+
+        private E last() throws NoSuchElementException {
+            if (size == 0) {
+                throw new NoSuchElementException();
+            }
+            return getKey(lastNode());
+        }
+
+        @NotNull
+        private Iterator<E> ascendingIterator() {
+            return new AscendingIterator();
+        }
+
+        @NotNull
+        private Iterator<E> descendingIterator() {
+            return new DescendingIterator();
+        }
+
+        private boolean contains(@Nullable Object o) throws ClassCastException {
+            if (comparator == null && o == null) {
+                throw new NullPointerException();
+            }
+            Node node = root;
             while (node != null) {
-                if (comparator.compare(key, node.key) <= 0) {
-                    result = node;
+                int cmpResult = compare(o, node.key);
+                if (cmpResult == 0) {
+                    return true;
+                } else if (cmpResult < 0) {
                     node = node.left;
                 } else {
                     node = node.right;
                 }
             }
-            return result;
+            return false;
         }
 
         @Nullable
-        private Node upperBound(@NotNull E key) {
-            Node node = root;
-            Node result = null;
-
-            while (node != null) {
-                if (comparator.compare(key, node.key) < 0) {
-                    result = node;
-                    node = node.left;
-                } else {
-                    node = node.right;
-                }
-            }
-            return result;
-        }
-
-        @Contract(value = "null -> null", pure = true)
-        @Nullable
-        private E getKey(Node node) {
+        private E lower(@Nullable E e) {
+            Node node = lowerBound(e);
             if (node == null) {
-                return null;
+                return last();
+            } else {
+                if (node == firstNode()) {
+                    return null;
+                }
+                return getKey(previousNode(node));
             }
-            return node.key;
         }
 
         @Nullable
+        private E floor(@Nullable E e) {
+            Node node = upperBound(e);
+            if (node == null) {
+                return last();
+            } else {
+                if (node == firstNode()) {
+                    return null;
+                }
+                return getKey(previousNode(node));
+            }
+        }
+
+        @Nullable
+        private E higher(@Nullable E e) {
+            Node node = upperBound(e);
+            return getKey(node);
+        }
+
+        @Nullable
+        private E ceiling(@Nullable E e) {
+            Node node = lowerBound(e);
+            return getKey(node);
+        }
+
+        private boolean add(@Nullable E e) {
+            if (root == null) {
+                compare(e, e);
+                root = new Node(e, null);
+                size++;
+                version++;
+                return true;
+            }
+            Node node = lowerBound(e);
+            if (node != null && compare(e, node.key) == 0) {
+                return false;
+            }
+            if (node == null || node.left != null) {
+                if (node == null) {
+                    node = root;
+                } else {
+                    node = node.left;
+                }
+                while (node.right != null) {
+                    node = node.right;
+                }
+                node.right = new Node(e, node);
+            } else {
+                node.left = new Node(e, node);
+            }
+            version++;
+            size++;
+            return true;
+        }
+
+        private boolean remove(@Nullable Object o) throws ClassCastException {
+            if (!contains(o)) {
+                return false;
+            }
+            Node node = lowerBound(o);
+            if (node.left == null && node.right == null) {
+                if (node.parent == null) {
+                    root = null;
+                } else {
+                    if (node.parent.left == node) {
+                        node.parent.left = null;
+                    } else {
+                        node.parent.right = null;
+                    }
+                }
+            }
+            else if (node.right == null) {
+                if (node.parent == null) {
+                    root = node.left;
+                }
+                else if (node.parent.left == node) {
+                    node.parent.left = node.left;
+                    node.left.parent = node.parent;
+                } else {
+                    node.parent.right = node.left;
+                    node.left.parent = node.parent;
+                }
+            } else if (node.left == null) {
+                if (node.parent == null) {
+                    root = node.right;
+                }
+                else if (node.parent.left == node) {
+                    node.parent.left = node.right;
+                    node.right.parent = node.parent;
+                } else {
+                    node.parent.right = node.right;
+                    node.right.parent = node.parent;
+                }
+
+            } else {
+                Node next = nextNode(node);
+                swapKeys(node, next);
+                if (next.parent.left == next) {
+                    next.parent.left = next.right;
+                } else {
+                    next.parent.right = next.right;
+                }
+                if (next.right != null) {
+                    next.right.parent = next.parent;
+                }
+            }
+            size--;
+            version++;
+            return true;
+        }
+
+        private void clear() {
+            root = null;
+            size = 0;
+            version++;
+        }
+
+        /* Even more private methods */
+
+        @SuppressWarnings("unchecked")
+        private int compare(Object o1, Object o2) {
+            return comparator == null ? ((Comparable<? super E>) o1).compareTo((E) o2) : comparator.compare((E) o1, (E) o2);
+        }
+
         private Node firstNode() {
             Node node = root;
             while (node != null && node.left != null) {
@@ -264,7 +330,6 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             return node;
         }
 
-        @Nullable
         private Node lastNode() {
             Node node = root;
             while (node != null && node.right != null) {
@@ -308,6 +373,46 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             tmp = node1.key;
             node1.key = node2.key;
             node2.key = tmp;
+        }
+
+        @Nullable
+        private Node lowerBound(Object key) {
+            Node node = root;
+            Node result = null;
+
+            while (node != null) {
+                if (compare(key, node.key) <= 0) {
+                    result = node;
+                    node = node.left;
+                } else {
+                    node = node.right;
+                }
+            }
+            return result;
+        }
+
+        @Nullable
+        private Node upperBound(Object key) {
+            Node node = root;
+            Node result = null;
+
+            while (node != null) {
+                if (compare(key, node.key) < 0) {
+                    result = node;
+                    node = node.left;
+                } else {
+                    node = node.right;
+                }
+            }
+            return result;
+        }
+
+        @Nullable
+        private E getKey(Node node) {
+            if (node == null) {
+                return null;
+            }
+            return node.key;
         }
 
         private class AscendingIterator implements Iterator<E> {
@@ -365,193 +470,5 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
                 }
             }
         }
-
-        private int size() {
-            return size;
-        }
-
-        @Nullable
-        private E first() {
-            return getKey(firstNode());
-        }
-
-        @Nullable
-        private E last() {
-            return getKey(lastNode());
-        }
-
-        @NotNull
-        private Iterator<E> ascendingIterator() {
-            return new AscendingIterator();
-        }
-
-        @NotNull
-        private Iterator<E> descendingIterator() {
-            return new DescendingIterator();
-        }
-        @SuppressWarnings("unchecked")
-        private boolean contains(@Nullable Object o) throws ClassCastException {
-            if (o == null) {
-                return false;
-            }
-            Node node = root;
-            while (node != null) {
-                int cmpResult = comparator.compare(node.key, (E) o);
-                if (cmpResult == 0) {
-                    return true;
-                } else if (cmpResult > 0) {
-                    node = node.left;
-                } else {
-                    node = node.right;
-                }
-            }
-            return false;
-        }
-
-        @Nullable
-        private E lower(@Nullable E e) {
-            if (e == null) {
-                return null;
-            }
-            Node node = lowerBound(e);
-            if (node == null) {
-                return last();
-            } else {
-                if (node == firstNode()) {
-                    return null;
-                }
-                return getKey(previousNode(node));
-            }
-        }
-
-        @Nullable
-        private E floor(@Nullable E e) {
-            if (e == null) {
-                return null;
-            }
-            Node node = upperBound(e);
-            if (node == null) {
-                return last();
-            } else {
-                if (node == firstNode()) {
-                    return null;
-                }
-                return getKey(previousNode(node));
-            }
-        }
-
-        @Nullable
-        private E higher(@Nullable E e) {
-            if (e == null) {
-                return null;
-            }
-            Node node = upperBound(e);
-            return getKey(node);
-        }
-
-        @Nullable
-        private E ceiling(@Nullable E e) {
-            if (e == null) {
-                return null;
-            }
-            Node node = lowerBound(e);
-            return getKey(node);
-        }
-
-        private boolean add(@Nullable E e) {
-            if (e == null) {
-                return false;
-            }
-            if (root == null) {
-                root = new Node(e, null);
-                size++;
-                version++;
-                return true;
-            }
-            Node node = lowerBound(e);
-            if (node != null && comparator.compare(getKey(node), e) == 0) {
-                return false;
-            }
-            if (node == null || node.left != null) {
-                if (node == null) {
-                    node = root;
-                } else {
-                    node = node.left;
-                }
-                while (node.right != null) {
-                    node = node.right;
-                }
-                node.right = new Node(e, node);
-            } else {
-                node.left = new Node(e, node);
-            }
-            version++;
-            size++;
-            return true;
-        }
-
-        @SuppressWarnings("unchecked")
-        private boolean remove(@Nullable Object o) throws ClassCastException {
-            if (!contains(o)) {
-                return false;
-            }
-            Node node = lowerBound((E) o);
-            if (node.left == null && node.right == null) {
-                if (node.parent == null) {
-                    root = null;
-                } else {
-                    if (node.parent.left == node) {
-                        node.parent.left = null;
-                    } else {
-                        node.parent.right = null;
-                    }
-                }
-            }
-            else if (node.right == null) {
-                if (node.parent == null) {
-                    root = node.left;
-                }
-                else if (node.parent.left == node) {
-                    node.parent.left = node.left;
-                    node.left.parent = node.parent;
-                } else {
-                    node.parent.right = node.left;
-                    node.left.parent = node.parent;
-                }
-            } else if (node.left == null) {
-                if (node.parent == null) {
-                    root = node.right;
-                }
-                else if (node.parent.left == node) {
-                    node.parent.left = node.right;
-                    node.right.parent = node.parent;
-                } else {
-                    node.parent.right = node.right;
-                    node.right.parent = node.parent;
-                }
-
-            } else {
-                Node next = nextNode(node);
-                swapKeys(node, next);
-                if (next.parent.left == next) {
-                    next.parent.left = next.right;
-                } else {
-                    next.parent.right = next.right;
-                }
-                if (next.right != null) {
-                    next.right.parent = next.parent;
-                }
-            }
-            size--;
-            version++;
-            return true;
-        }
-
-        private void clear() {
-            root = null;
-            size = 0;
-            version++;
-        }
     }
-
 }

@@ -1,5 +1,6 @@
 package me.sieric.treeset;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,7 @@ class MyTreeSetTest {
         for (int i = 0; i < 10; ++i) {
             tree.add((15 + i * i) % 30);
         }
+        // tree = {1, 4, 6, 10, 15, 16, 19, 21, 24}
     }
 
     @Test
@@ -94,13 +96,13 @@ class MyTreeSetTest {
     @Test
     void testFirst() {
         assertEquals(tree.first(), (Integer) 1);
-        assertNull(emptyTree.first());
+        assertThrows(NoSuchElementException.class, () -> emptyTree.first());
     }
 
     @Test
     void testLast() {
         assertEquals(tree.last(), (Integer) 24);
-        assertNull(emptyTree.last());
+        assertThrows(NoSuchElementException.class, () -> emptyTree.last());
     }
 
     @Test
@@ -186,4 +188,48 @@ class MyTreeSetTest {
         assertThrows(ConcurrentModificationException.class, iterator::next);
     }
 
+    @Test
+    void testWithNull() {
+        assertThrows(NullPointerException.class, () -> tree.add(null));
+        assertThrows(NullPointerException.class, () -> tree.remove(null));
+        assertThrows(NullPointerException.class, () -> tree.contains(null));
+
+        MyTreeSet strangeTree = new MyTreeSet<Integer>((a, b) -> 0);
+        assertTrue(strangeTree.add(null));
+        assertTrue(strangeTree.contains(null));
+        assertTrue(strangeTree.remove(null));
+    }
+
+    private static class Kek implements Comparable<Kek> {
+        int number;
+        Kek(int number) {
+            this.number = number;
+        }
+
+        @Override
+        public int compareTo(@NotNull MyTreeSetTest.Kek o) {
+            return this.number - o.number;
+        }
+    }
+
+    private static class Lol implements Comparable<Kek> {
+        int number;
+        Lol(int number) {
+            this.number = number;
+        }
+
+        @Override
+        public int compareTo(@NotNull MyTreeSetTest.Kek o) {
+            return this.number - o.number;
+        }
+    }
+
+    @Test
+    void testCompareNotSuperClasses() {
+        MyTreeSet<Kek> kekTree = new MyTreeSet<>();
+        kekTree.add(new Kek(3));
+        kekTree.add(new Kek(20));
+        assertTrue(kekTree.contains(new Lol(3)));
+        assertTrue(kekTree.remove(new Lol(20)));
+    }
 }
