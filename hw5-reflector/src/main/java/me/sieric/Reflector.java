@@ -2,6 +2,8 @@ package me.sieric;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.google.googlejavaformat.java.Formatter;
+import com.google.googlejavaformat.java.FormatterException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,30 +18,42 @@ import java.util.stream.Collectors;
 /** Class to print structure of java classes and compare content of classes */
 public class Reflector {
 
-  /**
-   * Prints structure of a given class.
-   * Includes imports, class declaration, fields, constructors, methods and inner classes and interfaces.
-   * Writes the result in working directory naming the file same as class.
-   * @param someClass - a class to print
-   * @throws FileNotFoundException if can't open file to print class
-   */
-  public static void printStructure(@NotNull Class<?> someClass) throws FileNotFoundException {
+    /**
+     * Prints structure of a given class.
+     * Includes imports, class declaration, fields, constructors, methods and inner classes and interfaces.
+     * Writes the result in working directory naming the file same as class.
+     * @param someClass - a class to print
+     * @throws FileNotFoundException if can't open file to print class
+     * @throws FormatterException if can't format the code beautifully
+     */
+    public static void printStructure(@NotNull Class<?> someClass) throws FileNotFoundException, FormatterException {
+//        var kek = new File("genFile/");
+        PrintWriter printWriter = new PrintWriter(new FileOutputStream(new File(someClass.getSimpleName() + ".java")));
+        printWriter.print(getStructure(someClass));
+        printWriter.close();
+    }
+
+    /**
+     * Gets structure of a given class.
+     * Includes imports, class declaration, fields, constructors, methods and inner classes and interfaces.
+     * @param someClass - a class to get structure of
+     * @return a source code of given class
+     */
+    public static String getStructure(@NotNull Class<?> someClass) throws FormatterException {
         StringBuilder classSource = new StringBuilder();
 
         printImports(someClass, classSource);
         printClass(someClass, classSource);
 
-        PrintWriter printWriter = new PrintWriter(new FileOutputStream(new File(someClass.getSimpleName() + ".java")));
-        printWriter.print(classSource.toString());
-        printWriter.close();
+        return new Formatter().formatSourceAndFixImports(classSource.toString());
     }
 
-  /**
-   * Prints to System.out all methods and fields which exists in exactly one class of two given classes.
-   * @param firstClass - a first class
-   * @param secondClass - a second class
-   */
-  public static void diffClasses(@NotNull Class<?> firstClass, @NotNull Class<?> secondClass) {
+    /**
+     * Prints to System.out all methods and fields which exists in exactly one class of two given classes.
+     * @param firstClass - a first class
+     * @param secondClass - a second class
+     */
+    public static void diffClasses(@NotNull Class<?> firstClass, @NotNull Class<?> secondClass) {
         if (oneSideDiffClasses(firstClass, secondClass) & oneSideDiffClasses(secondClass, firstClass)) {
             System.out.println("Classes are equal!!!!");
         }
@@ -83,7 +97,7 @@ public class Reflector {
 
     private static String methodToString(Method method) {
         return Modifier.toString(method.getModifiers()) + " " + getMethodGenericType(method) + " " + method.getGenericReturnType().getTypeName() + " "
-                + method.getName() + getParameters(method.getGenericParameterTypes()) + getExceptions(method.getExceptionTypes());
+                + method.getName() + getParameters(method.getGenericParameterTypes(), false) + getExceptions(method.getExceptionTypes());
     }
 
     private static void printImports(Class<?> someClass, StringBuilder source) {
@@ -107,8 +121,8 @@ public class Reflector {
         if (someClass.getSuperclass() != null) {
             addToImports(someClass.getSuperclass(), imports);
         }
-        for (Class<?> iinterface : someClass.getInterfaces()) {
-            addToImports(iinterface, imports);
+        for (Class<?> interFace : someClass.getInterfaces()) {
+            addToImports(interFace, imports);
         }
     }
 
@@ -187,8 +201,8 @@ public class Reflector {
     private static void printInterfaces(Class<?> someClass, StringBuilder source) {
         if (someClass.getInterfaces().length != 0) {
             StringJoiner interfaces = new StringJoiner(", ", " implements ", "");
-            for (Type iinterface : someClass.getGenericInterfaces()) {
-                interfaces.add(iinterface.toString().replace("interface ", ""));
+            for (Type interFace : someClass.getGenericInterfaces()) {
+                interfaces.add(interFace.toString().replace("interface ", ""));
             }
             source.append(interfaces.toString());
         }
@@ -226,14 +240,15 @@ public class Reflector {
     }
 
     private static void printConstructors(Class<?> someClass, StringBuilder source) {
-        Arrays.stream(someClass.getDeclaredConstructors()).filter(x -> !x.isSynthetic()).forEach(x -> printConstructor(x, source));
+        boolean isInner = (someClass.getModifiers() & ~Modifier.PUBLIC & ~Modifier.STATIC) != 0;
+        Arrays.stream(someClass.getDeclaredConstructors()).filter(x -> !x.isSynthetic()).forEach(x -> printConstructor(x, source, isInner));
     }
 
-    private static void printConstructor(Constructor<?> constructor, StringBuilder source) {
+    private static void printConstructor(Constructor<?> constructor, StringBuilder source, boolean isInner) {
         source.append(Modifier.toString(constructor.getModifiers()));
         source.append(" ");
         source.append(constructor.getDeclaringClass().getSimpleName());
-        source.append(getParameters(constructor.getGenericParameterTypes()));
+        source.append(getParameters(constructor.getGenericParameterTypes(), isInner));
         source.append(" ");
         source.append(getExceptions(constructor.getExceptionTypes()));
         source.append("{}\n");
@@ -250,7 +265,7 @@ public class Reflector {
         source.append(method.getGenericReturnType().getTypeName());
         source.append(" ");
         source.append(method.getName());
-        source.append(getParameters(method.getGenericParameterTypes()));
+        source.append(getParameters(method.getGenericParameterTypes(), false));
         source.append(" ");
         source.append(getExceptions(method.getExceptionTypes()));
         if ((method.getModifiers() & Modifier.ABSTRACT) == 0) {
@@ -289,11 +304,15 @@ public class Reflector {
         return "";
     }
 
-    private static String getParameters(Type[] parameters) {
+    private static String getParameters(Type[] parameters, boolean notUseFirst) {
         int counter = 0;
         StringJoiner params = new StringJoiner(", ", "(", ")");
         for (var parameter : parameters) {
-            params.add(parameter.getTypeName() + " a" + counter++);
+            if (notUseFirst && counter == 0) {
+                counter++;
+            } else {
+                params.add(parameter.getTypeName() + " a" + counter++);
+            }
         }
         return params.toString();
     }

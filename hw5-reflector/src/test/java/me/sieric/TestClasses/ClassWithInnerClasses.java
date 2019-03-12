@@ -4,7 +4,7 @@ public class ClassWithInnerClasses {
 
     private class A {
         int kek = 0;
-        private A(ClassWithInnerClasses a) {
+        private A() {
 
         }
     }

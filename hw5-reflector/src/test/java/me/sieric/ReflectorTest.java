@@ -119,4 +119,14 @@ class ReflectorTest {
 
         deleteClass("ClassWithInnerClasses");
     }
+
+    @Test
+    void testConstructors() {
+        assertAll(() -> printStructure(me.sieric.TestClasses.ClassWithConstructors.class));
+        assertAll(() -> compile("ClassWithConstructors"));
+
+        deleteClass("ClassWithConstructors");
+    }
+
+
 }
