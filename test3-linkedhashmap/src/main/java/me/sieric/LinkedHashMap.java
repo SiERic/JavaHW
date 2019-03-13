@@ -44,12 +44,18 @@ public class LinkedHashMap<K, V> implements Map<K,V> {
         return (size == 0);
     }
 
+    /**
+     * {@link Map#containsKey(java.lang.Object)}
+     */
     @Override
     public boolean containsKey(Object key) {
         int hash = getHash(key);
         return data[hash].contains(key);
     }
 
+    /**
+     * {@link Map#containsValue(java.lang.Object)}
+     */
     @Override
     public boolean containsValue(Object value) {
         for (LinkedList<K,V>.Node node = order.getHead(); node != null; node = node.getNext()) {
@@ -61,6 +67,9 @@ public class LinkedHashMap<K, V> implements Map<K,V> {
         return false;
     }
 
+    /**
+     * {@link Map#get(java.lang.Object)}
+     */
     @Override
     public V get(Object key) {
         int hash = getHash(key);
@@ -68,6 +77,9 @@ public class LinkedHashMap<K, V> implements Map<K,V> {
         return entry == null ? null : entry.getValue();
     }
 
+    /**
+     * {@link Map#put(java.lang.Object, java.lang.Object)}
+     */
     @Override
     public V put(K key, V value) {
         int hash = getHash(key);
@@ -85,6 +97,9 @@ public class LinkedHashMap<K, V> implements Map<K,V> {
         return oldValue;
     }
 
+    /**
+     * {@link Map#remove(java.lang.Object)}
+     */
     @Override
     public V remove(Object key) {
         int hash = getHash(key);
@@ -95,6 +110,9 @@ public class LinkedHashMap<K, V> implements Map<K,V> {
         return null;
     }
 
+    /**
+     * {@link Map#putAll(java.util.Map)}
+     */
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         for (Entry<? extends K, ? extends V> entry : m.entrySet()) {
@@ -102,6 +120,9 @@ public class LinkedHashMap<K, V> implements Map<K,V> {
         }
     }
 
+    /**
+     * {@link Map#clear()}
+     */
     @Override
     public void clear() {
         for (int i = 0; i < capacity; ++i) {
