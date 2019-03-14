@@ -7,5 +7,6 @@ env:
     - PROJECT_DIR=hw1-hashtable
     - PROJECT_DIR=hw2-trie
     - PROJECT_DIR=test2-injector
+    - PROJECT_DIR=test3-linkedhashmap
 
 script: cd $PROJECT_DIR && ./gradlew build
