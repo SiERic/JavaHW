@@ -200,36 +200,36 @@ class MyTreeSetTest {
         assertTrue(strangeTree.remove(null));
     }
 
-    private static class Kek implements Comparable<Kek> {
+    private static class Base implements Comparable<Base> {
         int number;
-        Kek(int number) {
+        Base(int number) {
             this.number = number;
         }
 
         @Override
-        public int compareTo(@NotNull MyTreeSetTest.Kek o) {
+        public int compareTo(@NotNull MyTreeSetTest.Base o) {
             return this.number - o.number;
         }
     }
 
-    private static class Lol implements Comparable<Kek> {
+    private static class Special implements Comparable<Base> {
         int number;
-        Lol(int number) {
+        Special(int number) {
             this.number = number;
         }
 
         @Override
-        public int compareTo(@NotNull MyTreeSetTest.Kek o) {
+        public int compareTo(@NotNull MyTreeSetTest.Base o) {
             return this.number - o.number;
         }
     }
 
     @Test
     void testCompareNotSuperClasses() {
-        MyTreeSet<Kek> kekTree = new MyTreeSet<>();
-        kekTree.add(new Kek(3));
-        kekTree.add(new Kek(20));
-        assertTrue(kekTree.contains(new Lol(3)));
-        assertTrue(kekTree.remove(new Lol(20)));
+        MyTreeSet<Base> kekTree = new MyTreeSet<>();
+        kekTree.add(new Base(3));
+        kekTree.add(new Base(20));
+        assertTrue(kekTree.contains(new Special(3)));
+        assertTrue(kekTree.remove(new Special(20)));
     }
 }

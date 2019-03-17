@@ -54,13 +54,13 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
     }
 
     /** {@link TreeSet#first()} */
-    @Override @Nullable
+    @Override @NotNull
     public E first() throws NoSuchElementException {
         return (isAscending ? tree.first() : tree.last());
     }
 
     /** {@link TreeSet#last()} */
-    @Override @Nullable
+    @Override @NotNull
     public E last() throws NoSuchElementException {
         return (isAscending ? tree.last() : tree.first());
     }
@@ -129,13 +129,13 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             Node parent;
             E key;
 
-            Node(E key, @Nullable Node parent) {
+            Node(@Nullable E key, @Nullable Node parent) {
                 this.key = key;
                 this.parent = parent;
             }
         }
 
-        private Tree(Comparator<? super E> comparator) {
+        private Tree(@Nullable Comparator<? super E> comparator) {
             this.comparator = comparator;
         }
 
@@ -143,6 +143,7 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             return size;
         }
 
+        @NotNull
         private E first() throws NoSuchElementException {
             if (size == 0) {
                 throw new NoSuchElementException();
@@ -150,6 +151,7 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             return getKey(firstNode());
         }
 
+        @NotNull
         private E last() throws NoSuchElementException {
             if (size == 0) {
                 throw new NoSuchElementException();
@@ -223,9 +225,15 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             return getKey(node);
         }
 
+        void checkNull() {
+            compare(null, null);
+        }
+
         private boolean add(@Nullable E e) {
+            if (e == null) {
+                checkNull();
+            }
             if (root == null) {
-                compare(e, e);
                 root = new Node(e, null);
                 size++;
                 version++;
@@ -318,8 +326,8 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
         /* Even more private methods */
 
         @SuppressWarnings("unchecked")
-        private int compare(Object o1, Object o2) {
-            return comparator == null ? ((Comparable<? super E>) o1).compareTo((E) o2) : comparator.compare((E) o1, (E) o2);
+        private int compare(@Nullable Object o1, @Nullable E o2) {
+            return comparator == null ? ((Comparable<? super E>) o1).compareTo(o2) : comparator.compare((E) o1, o2);
         }
 
         private Node firstNode() {
