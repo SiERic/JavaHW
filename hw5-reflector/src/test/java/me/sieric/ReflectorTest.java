@@ -44,9 +44,7 @@ class ReflectorTest {
         System.setOut(out);
 
         assertAll(() -> Reflector.diffClasses(me.sieric.TestClasses.EmptyClass.class, emptyClass));
-        assertEquals("Classes are equal!!!!\n", baOut.toString());
-
-//        deleteClass("EmptyClass");
+        assertEquals("Classes are equal!!!!" + System.lineSeparator(), baOut.toString());
     }
 
     @Test
@@ -61,10 +59,10 @@ class ReflectorTest {
         assertAll(() -> Reflector.diffClasses(me.sieric.TestClasses.EmptyClass.class, classWithOneField));
 
         assertEquals(
-        "Classes are different!!!!\n"
-            + "-------------------------------------\n"
-            + "ClassWithOneField / EmptyClass fields:\n"
-            + "private int kek\n", baOut.toString());
+        "Classes are different!!!!" + System.lineSeparator()
+            + "-------------------------------------" + System.lineSeparator()
+            + "ClassWithOneField / EmptyClass fields:" + System.lineSeparator()
+            + "private int kek" + System.lineSeparator(), baOut.toString());
     }
 
     @Test
