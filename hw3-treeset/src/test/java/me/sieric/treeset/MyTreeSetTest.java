@@ -207,7 +207,7 @@ class MyTreeSetTest {
         }
 
         @Override
-        public int compareTo(@NotNull MyTreeSetTest.Base o) {
+        public int compareTo(@NotNull Base o) {
             return this.number - o.number;
         }
     }
@@ -219,17 +219,17 @@ class MyTreeSetTest {
         }
 
         @Override
-        public int compareTo(@NotNull MyTreeSetTest.Base o) {
+        public int compareTo(@NotNull Base o) {
             return this.number - o.number;
         }
     }
 
     @Test
     void testCompareNotSuperClasses() {
-        MyTreeSet<Base> kekTree = new MyTreeSet<>();
-        kekTree.add(new Base(3));
-        kekTree.add(new Base(20));
-        assertTrue(kekTree.contains(new Special(3)));
-        assertTrue(kekTree.remove(new Special(20)));
+        MyTreeSet<Base> baseTree = new MyTreeSet<>();
+        baseTree.add(new Base(3));
+        baseTree.add(new Base(20));
+        assertTrue(baseTree.contains(new Special(3)));
+        assertTrue(baseTree.remove(new Special(20)));
     }
 }

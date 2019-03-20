@@ -54,13 +54,13 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
     }
 
     /** {@link TreeSet#first()} */
-    @Override @NotNull
+    @Override @Nullable
     public E first() throws NoSuchElementException {
         return (isAscending ? tree.first() : tree.last());
     }
 
     /** {@link TreeSet#last()} */
-    @Override @NotNull
+    @Override @Nullable
     public E last() throws NoSuchElementException {
         return (isAscending ? tree.last() : tree.first());
     }
@@ -143,7 +143,7 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             return size;
         }
 
-        @NotNull
+        @Nullable
         private E first() throws NoSuchElementException {
             if (size == 0) {
                 throw new NoSuchElementException();
@@ -151,7 +151,7 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             return getKey(firstNode());
         }
 
-        @NotNull
+        @Nullable
         private E last() throws NoSuchElementException {
             if (size == 0) {
                 throw new NoSuchElementException();
@@ -225,7 +225,7 @@ public class MyTreeSet<E> extends AbstractSet<E> implements MyTreeSetInterface<E
             return getKey(node);
         }
 
-        void checkNull() {
+        private void checkNull() {
             compare(null, null);
         }
 
