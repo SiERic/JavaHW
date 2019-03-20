@@ -114,8 +114,11 @@ public class Main {
      * @param record - a record to add
      */
     private static void addRecord(PhoneBook.PhoneBookRecord record) {
-        phoneBook.add(record);
-        System.out.println("Record added successfully");
+        if (phoneBook.add(record)) {
+            System.out.println("Record added successfully");
+        } else {
+            System.out.println("Record already exists in the phone book");
+        }
     }
 
     /**
@@ -123,8 +126,13 @@ public class Main {
      * @param name - a name to find by
      */
     private static void findByName(String name) {
-        for (var record : phoneBook.getByName(name)) {
-            System.out.println(record.getName() + " " + record.getNumber());
+        var phonesByName = phoneBook.getByName(name);
+        if (phonesByName.isEmpty()) {
+            System.out.println("There are no records with this name in the phone book");
+        } else {
+            for (var record : phonesByName) {
+                System.out.println(record.getName() + " " + record.getNumber());
+            }
         }
     }
 
@@ -133,8 +141,13 @@ public class Main {
      * @param number - a number to find by
      */
     private static void findByNumber(String number) {
-        for (var record : phoneBook.getByNumber(number)) {
-            System.out.println(record.getName() + " " + record.getNumber());
+        var phonesByNumber = phoneBook.getByNumber(number);
+        if (phonesByNumber.isEmpty()) {
+            System.out.println("There are no records with this number in the phone book");
+        } else {
+            for (var record : phonesByNumber) {
+                System.out.println(record.getName() + " " + record.getNumber());
+            }
         }
     }
 

@@ -34,7 +34,7 @@ class PhoneBookTest {
         assertFalse(phoneBook.delete(new PhoneBook.PhoneBookRecord("kek", "heh")));
         phoneBook.add(new PhoneBook.PhoneBookRecord("qqq", "178"));
         assertTrue(phoneBook.delete(new PhoneBook.PhoneBookRecord("qqq", "178")));
-        assertTrue(phoneBook.contains(new PhoneBook.PhoneBookRecord("qqq", "178")));
+        assertFalse(phoneBook.contains(new PhoneBook.PhoneBookRecord("qqq", "178")));
     }
 
     @Test

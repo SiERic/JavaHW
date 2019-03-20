@@ -78,8 +78,12 @@ public class PhoneBook {
      * Adds a record to phone book
      * @param record - a record to add
      */
-    public void add(PhoneBookRecord record) {
+    public boolean add(PhoneBookRecord record) {
+        if (contains(record)) {
+            return false;
+        }
         datastore.save(record);
+        return true;
     }
 
     /**
