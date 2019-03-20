@@ -27,7 +27,6 @@ public class Reflector {
      * @throws FormatterException if can't format the code beautifully
      */
     public static void printStructure(@NotNull Class<?> someClass) throws FileNotFoundException, FormatterException {
-//        var kek = new File("genFile/");
         PrintWriter printWriter = new PrintWriter(new FileOutputStream(new File(someClass.getSimpleName() + ".java")));
         printWriter.print(getStructure(someClass));
         printWriter.close();
@@ -81,8 +80,10 @@ public class Reflector {
     }
 
     private static String getFieldsDiff(Class<?> firstClass, Class<?> secondClass) {
-        Set<String> fieldsFirst = Arrays.stream(firstClass.getDeclaredFields()).map(Reflector::fieldToString).collect(Collectors.toCollection(HashSet::new));
-        return Arrays.stream(secondClass.getDeclaredFields()).map(Reflector::fieldToString).filter(s -> !fieldsFirst.contains(s)).collect(Collectors.joining("\n"));
+        Set<String> fieldsFirst = Arrays.stream(firstClass.getDeclaredFields()).
+                map(Reflector::fieldToString).collect(Collectors.toCollection(HashSet::new));
+        return Arrays.stream(secondClass.getDeclaredFields()).map(Reflector::fieldToString).
+                filter(s -> !fieldsFirst.contains(s)).collect(Collectors.joining("\n"));
     }
 
     private static String fieldToString(Field field) {
@@ -90,14 +91,16 @@ public class Reflector {
     }
 
     private static String getMethodsDiff(Class<?> firstClass, Class<?> secondClass) {
-        Set<String> methodsFirst = Arrays.stream(firstClass.getDeclaredMethods()).map(Reflector::methodToString).collect(Collectors.toCollection(HashSet::new));
-        return Arrays.stream(secondClass.getDeclaredMethods()).map(Reflector::methodToString).filter(s -> !methodsFirst
-                .contains(s)).collect(Collectors.joining("\n"));
+        Set<String> methodsFirst = Arrays.stream(firstClass.getDeclaredMethods()).
+                map(Reflector::methodToString).collect(Collectors.toCollection(HashSet::new));
+        return Arrays.stream(secondClass.getDeclaredMethods()).map(Reflector::methodToString).
+                filter(s -> !methodsFirst.contains(s)).collect(Collectors.joining("\n"));
     }
 
     private static String methodToString(Method method) {
-        return Modifier.toString(method.getModifiers()) + " " + getMethodGenericType(method) + " " + method.getGenericReturnType().getTypeName() + " "
-                + method.getName() + getParameters(method.getGenericParameterTypes(), false) + getExceptions(method.getExceptionTypes());
+        return Modifier.toString(method.getModifiers()) + " " + getMethodGenericType(method) + " "
+                + method.getGenericReturnType().getTypeName() + " " + method.getName()
+                + getParameters(method.getGenericParameterTypes(), false) + getExceptions(method.getExceptionTypes());
     }
 
     private static void printImports(Class<?> someClass, StringBuilder source) {
@@ -212,7 +215,8 @@ public class Reflector {
         if (parameters.length != 0) {
             StringJoiner genericType = new StringJoiner(", ", "<", ">");
             for (var param : parameters) {
-                String bounds = Arrays.stream(param.getBounds()).map(Type::getTypeName).filter(type -> !type.equals("java.lang.Object")).collect(Collectors.joining(" & "));
+                String bounds = Arrays.stream(param.getBounds()).map(Type::getTypeName).
+                        filter(type -> !type.equals("java.lang.Object")).collect(Collectors.joining(" & "));
                 if (!bounds.equals("")) {
                     genericType.add(param.getName() + " extends " + bounds);
                 } else {
@@ -225,7 +229,8 @@ public class Reflector {
     }
 
     private static void printClassFields(Class<?> someClass, StringBuilder source) {
-        Arrays.stream(someClass.getDeclaredFields()).filter(x -> !x.isSynthetic()).forEach(x -> printField(x, source));
+        Arrays.stream(someClass.getDeclaredFields()).
+                filter(x -> !x.isSynthetic()).forEach(x -> printField(x, source));
     }
 
     private static void printField(Field field, StringBuilder source) {
@@ -241,7 +246,8 @@ public class Reflector {
 
     private static void printConstructors(Class<?> someClass, StringBuilder source) {
         boolean isInner = (someClass.getModifiers() & ~Modifier.PUBLIC & ~Modifier.STATIC) != 0;
-        Arrays.stream(someClass.getDeclaredConstructors()).filter(x -> !x.isSynthetic()).forEach(x -> printConstructor(x, source, isInner));
+        Arrays.stream(someClass.getDeclaredConstructors()).
+                filter(x -> !x.isSynthetic()).forEach(x -> printConstructor(x, source, isInner));
     }
 
     private static void printConstructor(Constructor<?> constructor, StringBuilder source, boolean isInner) {
@@ -255,7 +261,8 @@ public class Reflector {
     }
 
     private static void printClassMethods(Class<?> someClass, StringBuilder source) {
-        Arrays.stream(someClass.getDeclaredMethods()).filter(x -> !x.isSynthetic()).forEach(x -> printMethod(x, source));
+        Arrays.stream(someClass.getDeclaredMethods()).
+                filter(x -> !x.isSynthetic()).forEach(x -> printMethod(x, source));
     }
 
     private static void printMethod(Method method, StringBuilder source) {
