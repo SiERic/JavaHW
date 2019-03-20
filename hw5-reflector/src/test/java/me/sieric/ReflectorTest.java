@@ -1,5 +1,6 @@
 package me.sieric;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,16 +28,10 @@ class ReflectorTest {
         return Class.forName(name, true, classLoader);
     }
 
-    private void deleteClass(String className) {
-        var file = new File(className + ".class");
-        file.delete();
-    }
-
     @Test
     void testCompileBigInterestingClass() {
          assertAll(() -> printStructure(me.sieric.TestClasses.Kek.class));
          assertAll(() -> compile("Kek"));
-         deleteClass("Kek");
     }
 
     @Test
@@ -51,7 +46,7 @@ class ReflectorTest {
         assertAll(() -> Reflector.diffClasses(me.sieric.TestClasses.EmptyClass.class, emptyClass));
         assertEquals("Classes are equal!!!!\n", baOut.toString());
 
-        deleteClass("EmptyClass");
+//        deleteClass("EmptyClass");
     }
 
     @Test
@@ -70,8 +65,6 @@ class ReflectorTest {
             + "-------------------------------------\n"
             + "ClassWithOneField / EmptyClass fields:\n"
             + "private int kek\n", baOut.toString());
-
-        deleteClass("ClassWithOneField");
     }
 
     @Test
@@ -85,48 +78,45 @@ class ReflectorTest {
 
         assertAll(() -> Reflector.diffClasses(me.sieric.TestClasses.Kek.class, kek));
         assertEquals("Classes are equal!!!!\n", baOut.toString());
-        deleteClass("Kek");
     }
 
     @Test
     void testCompileEmptyClass() {
         assertAll(() -> printStructure(me.sieric.TestClasses.EmptyClass.class));
         assertAll(() -> compile("EmptyClass"));
-
-        deleteClass("EmptyClass");
     }
 
     @Test
     void testCompileClassWithDifferentFields() {
         assertAll(() -> printStructure(me.sieric.TestClasses.ClassWithFields.class));
         assertAll(() -> compile("ClassWithFields"));
-
-        deleteClass("ClassWithFields");
     }
 
     @Test
     void testCompileClassWithDifferentMethods() {
         assertAll(() -> printStructure(me.sieric.TestClasses.ClassWithMethods.class));
         assertAll(() -> compile("ClassWithMethods"));
-
-        deleteClass("ClassWithMethods");
     }
 
     @Test
     void testCompileClassWithInnerClasses() {
         assertAll(() -> printStructure(me.sieric.TestClasses.ClassWithInnerClasses.class));
         assertAll(() -> compile("ClassWithInnerClasses"));
-
-        deleteClass("ClassWithInnerClasses");
     }
 
     @Test
     void testConstructors() {
         assertAll(() -> printStructure(me.sieric.TestClasses.ClassWithConstructors.class));
         assertAll(() -> compile("ClassWithConstructors"));
-
-        deleteClass("ClassWithConstructors");
     }
 
-
+    @AfterEach
+    void deleteClasses() {
+        var folder = new File(".");
+        for (var file : folder.listFiles()) {
+            if (file.toString().endsWith(".class") || file.toString().endsWith(".java")) {
+                file.delete();
+            }
+        }
+    }
 }
