@@ -3,6 +3,4 @@ os: linux
 jdk: oraclejdk11
 services:
     - mongodb
-env:
-    - PROJECT_DIR=hw4-db
-script: cd $PROJECT_DIR && ./gradlew build
+script: for dir in */; do (cd "$dir" && ./gradlew check); done 
