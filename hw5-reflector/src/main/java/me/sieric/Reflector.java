@@ -83,7 +83,7 @@ public class Reflector {
         Set<String> fieldsFirst = Arrays.stream(firstClass.getDeclaredFields()).
                 map(Reflector::fieldToString).collect(Collectors.toCollection(HashSet::new));
         return Arrays.stream(secondClass.getDeclaredFields()).map(Reflector::fieldToString).
-                filter(s -> !fieldsFirst.contains(s)).collect(Collectors.joining("\n"));
+                filter(s -> !fieldsFirst.contains(s)).collect(Collectors.joining(System.lineSeparator()));
     }
 
     private static String fieldToString(Field field) {
@@ -94,7 +94,7 @@ public class Reflector {
         Set<String> methodsFirst = Arrays.stream(firstClass.getDeclaredMethods()).
                 map(Reflector::methodToString).collect(Collectors.toCollection(HashSet::new));
         return Arrays.stream(secondClass.getDeclaredMethods()).map(Reflector::methodToString).
-                filter(s -> !methodsFirst.contains(s)).collect(Collectors.joining("\n"));
+                filter(s -> !methodsFirst.contains(s)).collect(Collectors.joining(System.lineSeparator()));
     }
 
     private static String methodToString(Method method) {
