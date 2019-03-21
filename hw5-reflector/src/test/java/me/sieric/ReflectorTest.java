@@ -75,7 +75,7 @@ class ReflectorTest {
         System.setOut(out);
 
         assertAll(() -> Reflector.diffClasses(me.sieric.TestClasses.Kek.class, kek));
-        assertEquals("Classes are equal!!!!\n", baOut.toString());
+        assertEquals("Classes are equal!!!!" + System.lineSeparator(), baOut.toString());
     }
 
     @Test
