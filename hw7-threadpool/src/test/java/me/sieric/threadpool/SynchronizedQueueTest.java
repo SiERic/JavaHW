@@ -24,20 +24,6 @@ class SynchronizedQueueTest {
         assertEquals(Integer.valueOf(239), queue.pop());
     }
 
-//    @RepeatedTest(20)
-//    void testWaitForAdd() throws InterruptedException {
-//        Thread waiter = new Thread(() -> {
-//            try {
-//                assertEquals(Integer.valueOf(42), queue.pop());
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//        waiter.start();
-//        queue.push(42);
-//        waiter.join();
-//    }
-
     @RepeatedTest(20)
     void testMultiThread() throws InterruptedException {
         final int N = 1000;
