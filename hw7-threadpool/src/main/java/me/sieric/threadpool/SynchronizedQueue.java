@@ -24,7 +24,7 @@ public class SynchronizedQueue<E> {
      * Returns (and remove) head element of the queue.
      * If queue is empty, waits for element to be added
      * @return an element
-     * @throws InterruptedException
+     * @throws InterruptedException if the thread was interrupted while waiting for new element
      */
     public E pop() throws InterruptedException {
         synchronized (queue) {

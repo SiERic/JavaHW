@@ -103,6 +103,7 @@ class ThreadPoolTest {
 
         pool.shutdown();
         assertEquals(threadsOnStart, threadGroup.activeCount());
+        assertThrows(IllegalStateException.class, () -> pool.add(() -> 42));
     }
 
     private int maxThreads;

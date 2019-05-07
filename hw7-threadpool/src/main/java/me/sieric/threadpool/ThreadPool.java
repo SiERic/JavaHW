@@ -10,6 +10,7 @@ public class ThreadPool {
 
     private Thread[] threads;
     private SynchronizedQueue<ThreadPoolTask<?>> queue = new SynchronizedQueue<>();
+    private boolean isShutDown;
 
     public ThreadPool(int threadsNumber) {
         threads = new Thread[threadsNumber];
@@ -33,9 +34,13 @@ public class ThreadPool {
      * @param supplier task
      * @param <T> type of return value
      * @return {@link LightFuture} to track progress of task
+     * @throws IllegalStateException if called after shutdown
      */
     public <T> LightFuture<T> add(Supplier<T> supplier) {
-        ThreadPoolTask<T> lightFuture = new ThreadPoolTask<T>(supplier);
+        if (isShutDown) {
+            throw new IllegalStateException("Pool was shut down so no more tasks accepted");
+        }
+        ThreadPoolTask<T> lightFuture = new ThreadPoolTask<>(supplier);
         queue.push(lightFuture);
         return lightFuture;
     }
@@ -44,6 +49,7 @@ public class ThreadPool {
      * Interrupts all threads in the pool
      */
     public void shutdown() throws InterruptedException {
+        isShutDown = true;
         for (Thread thread : threads) {
             thread.interrupt();
         }
