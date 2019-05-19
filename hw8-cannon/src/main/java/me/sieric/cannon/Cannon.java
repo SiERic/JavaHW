@@ -12,7 +12,7 @@ public class Cannon {
     /** Cannon barrel */
     private Line barrel = new Line();
 
-    /** Barrel's angel (in [-pi; pi] ) */
+    /** Barrel's angel (in [0; pi] ) */
     private double angle;
 
     /** X coordinate of body center (and the beginning of tje barrel) */
@@ -47,27 +47,6 @@ public class Cannon {
     }
 
     /**
-     * Updates cannon center coordinates
-     * @param newX new x coordinate
-     * @param newY new y coordinate
-     */
-    public void updateCoordinates(int newX, int newY) {
-        x = newX;
-        y = newY;
-        updateBody();
-        updateBarrel();
-    }
-
-    /**
-     * Changes barrel angle by delta
-     * @param delta angle change
-     */
-    public void updateAngle(double delta) {
-        angle = angle + delta;
-        updateBarrel();
-    }
-
-    /**
      * Gets cannon body
      * @return cannon body
      */
@@ -86,28 +65,36 @@ public class Cannon {
     /** Moves cannon one step to the left */
     public void moveLeft() {
         if (x - Cannon.STEP >= 0) {
-            updateCoordinates(x - STEP, landscape.getYByX(x - Cannon.STEP));
+            x = x - STEP;
+            y = landscape.getYByX(x);
+            updateBody();
+            updateBarrel();
         }
     }
 
     /** Moves cannon one step to the right */
     public void moveRight() {
         if (x + Cannon.STEP <= Landscape.WIDTH) {
-            updateCoordinates(x + Cannon.STEP, landscape.getYByX(x + Cannon.STEP));
+            x = x + STEP;
+            y = landscape.getYByX(x);
+            updateBody();
+            updateBarrel();
         }
     }
 
     /** Increases barrel angle by one angle step */
     public void increaseAngle() {
-        if (angle + Cannon.ANGLE_STEP <= Math.PI) {
-            updateAngle(Cannon.ANGLE_STEP);
+        if (angle + ANGLE_STEP <= Math.PI) {
+            angle += ANGLE_STEP;
+            updateBarrel();
         }
     }
 
     /** Decreases barrel angle by one angle step */
     public void decreaseAngle() {
-        if (angle - Cannon.ANGLE_STEP >= 0) {
-            updateAngle(-Cannon.ANGLE_STEP);
+        if (angle - ANGLE_STEP >= 0) {
+            angle -= ANGLE_STEP;
+            updateBarrel();
         }
     }
 

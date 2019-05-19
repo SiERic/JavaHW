@@ -188,13 +188,9 @@ public class Main extends Application {
             Platform.runLater(() -> pane.getChildren().add(bullet.getBody()));
             int newX = bullet.getXByTime(time);
             int newY = bullet.getYByTime(time);
-            while (true) {
-
-                if (newX <= 0 || newX >= Landscape.WIDTH
-                              || newY - bullet.getRadius() / 2 > landscape.getYByX(newX)
-                              || isCloseToTarget(newX, newY)) {
-                    break;
-                }
+            while (newX > 0 && newX < Landscape.WIDTH
+                    && newY - bullet.getRadius() / 2 <= landscape.getYByX(newX)
+                        && !isCloseToTarget(newX, newY)) {
 
                 bullet.setX(newX);
                 bullet.setY(newY);
