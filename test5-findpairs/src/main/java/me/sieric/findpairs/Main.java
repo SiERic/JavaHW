@@ -33,7 +33,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         Parameters args = getParameters();
         int size = Integer.parseInt(args.getUnnamed().get(0));
-        if (size < 2 || size % 2 == 1) {
+        if (size < 2 || size > 8 || size % 2 == 1) {
             System.out.println("Sorry, this application works only with even number between 2 and 8");
             return;
         }
