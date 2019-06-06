@@ -2,8 +2,6 @@ package me.sieric.cannon;
 
 import javafx.scene.shape.Circle;
 
-import java.util.ArrayList;
-
 /** Class for graphical representation of a flying bullet */
 public class Bullet {
 
@@ -14,16 +12,13 @@ public class Bullet {
     private static final int TIME_CONST = 4;
 
     /** Starting x coordinate*/
-    private final int x0;
+    private final double x0;
 
     /** Starting y coordinate */
-    private final int y0;
+    private final double y0;
 
-    /** Bullet radius (depends on type) */
-    private final int radius;
-
-    /** Bullet speed (depends on type) */
-    private final double speed;
+    /** Current bullet type */
+    private BulletType type;
 
     /** Graphical representation of bullet */
     private Circle body;
@@ -31,26 +26,21 @@ public class Bullet {
     /** Starting flight angle */
     private final double angle;
 
-    /** List of bullet types (speed and size differ) */
-    private static ArrayList<BulletType> types = new ArrayList<>();
-    static {
-        int minRadius = Landscape.WIDTH / 200;
-        int minSpeed = Landscape.WIDTH / 32;
-        int speedStep = minSpeed / 2;
-        types.add(new BulletType(minRadius, minSpeed + 5 * speedStep));
-        types.add(new BulletType(minRadius + 1, minSpeed + 3 * speedStep));
-        types.add(new BulletType(minRadius + 2, minSpeed + 2 * speedStep));
-        types.add(new BulletType(minRadius + 3, minSpeed + speedStep));
-        types.add(new BulletType(minRadius + 4, minSpeed));
-    }
+    /** Radius of the smallest bullet */
+    private final static int bulletMinRadius = Landscape.WIDTH / 200;
 
-    public Bullet(int x0, int y0, int type, double angle) {
-        this.radius = types.get(type).radius;
+    /** Speed of the largest bullet */
+    private final static int bulletMinSpeed = Landscape.WIDTH / 32;
+
+    /** Bullet types speed step */
+    private final static int bulletSpeedStep = bulletMinSpeed / 2;
+
+    public Bullet(double x0, double y0, int typeId, double angle) {
         this.angle = angle;
-        this.speed = types.get(type).speed;
+        this.type = BulletType.getById(typeId);
         this.x0 = x0;
         this.y0 = y0;
-        body = new Circle(x0, y0, radius);
+        body = new Circle(x0, y0, type.radius);
     }
 
     /**
@@ -58,8 +48,8 @@ public class Bullet {
      * @param time elapsed time
      * @return x coordinate after {@code time} time units
      */
-    public int getXByTime(int time) {
-        return (int) (x0 + speed * time * Math.cos(angle) / TIME_CONST);
+    public double getXByTime(int time) {
+        return x0 + type.speed * time * Math.cos(angle) / TIME_CONST;
     }
 
     /**
@@ -67,29 +57,32 @@ public class Bullet {
      * @param time elapsed time
      * @return y coordinate after {@code time} time units
      */
-    public int getYByTime(int time) {
-        return (int) (y0 - speed * time * Math.sin(angle) / TIME_CONST + G * time * time / 2 / TIME_CONST / TIME_CONST);
+    public double getYByTime(int time) {
+        return y0 - type.speed * time * Math.sin(angle) / TIME_CONST + G * time * time / 2 / TIME_CONST / TIME_CONST;
+    }
+
+    /**
+     * Gets bullet types number
+     * @return bullet types number
+     */
+    public static int getTypesNumber() {
+        return BulletType.size();
     }
 
     /**
      * Gets acceptable distance between bullet's center and target
-     * @param type current bullet's type
+     * @param typeId current bullet's type
      * @return acceptable distance between bullet's center and target
      */
-    public static int getTypeDist(int type) {
-        return types.get(type).radius * types.get(type).radius / 4;
-    }
-
-    /** Gets bullet types number */
-    public static int getTypesNumber() {
-        return types.size();
+    public static int getTypeDist(int typeId) {
+        return BulletType.getById(typeId).getTypeDist();
     }
 
     /**
      * Sets new bullet center x coordinate
      * @param x new x coordinate
      */
-    public void setX(int x) {
+    public void setX(double x) {
         body.setCenterX(x);
     }
 
@@ -97,7 +90,7 @@ public class Bullet {
      * Sets new bullet center y coordinate
      * @param y new y coordinate
      */
-    public void setY(int y) {
+    public void setY(double y) {
         body.setCenterY(y);
     }
 
@@ -106,7 +99,7 @@ public class Bullet {
      * @return bullet radius
      */
     public int getRadius() {
-        return radius;
+        return type.radius;
     }
 
     /**
@@ -117,14 +110,42 @@ public class Bullet {
         return body;
     }
 
-    /** Data class ti store information about bullet type (size and speed) */
-    private static class BulletType {
+    /**
+     * Gets bullet type name
+     * @param typeId bullet type
+     * @return bullet type name
+     */
+    public static String getBulletTypeName(int typeId) {
+        return BulletType.getById(typeId).toString();
+    }
+
+    /** Enum to store information about bullet types */
+    private enum BulletType {
+
+        TINY(bulletMinRadius, bulletMinSpeed + 5 * bulletSpeedStep),
+        SMALL(bulletMinRadius + 1, bulletMinSpeed + 3 * bulletSpeedStep),
+        NORMAL(bulletMinRadius + 2, bulletMinSpeed + 2 * bulletSpeedStep),
+        BIG(bulletMinRadius + 3, bulletMinSpeed + bulletSpeedStep),
+        HUGE(bulletMinRadius + 4, bulletMinSpeed);
+
         private final int radius;
         private final int speed;
 
-        private BulletType(int radius, int speed) {
+        BulletType(int radius, int speed) {
             this.radius = radius;
             this.speed = speed;
+        }
+
+        private static BulletType getById(int id) {
+            return values()[id];
+        }
+
+        private int getTypeDist() {
+            return radius * radius / 4;
+        }
+
+        private static int size() {
+            return values().length;
         }
     }
 }

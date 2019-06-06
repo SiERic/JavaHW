@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Game last 30 seconds + 5 more seconds for every target achieved
  * Player cannot shot while prevoius bullet didn't land
  */
-public class Main extends Application {
+public class GameUI extends Application {
 
     /** Screen pane */
     private final Pane pane = new Pane();
@@ -48,14 +48,20 @@ public class Main extends Application {
     /** Remaining game time text */
     private Text timeText = new Text();
 
+    /** Game usage text */
+    private Text usageText = new Text();
+
+    /** Bullet type info text */
+    private Text bulletTypeInfoText = new Text();
+
     /** Game duration (in seconds) */
     private final int GAME_TIME = 30;
 
     /** Current target radius */
     private int targetRadius;
 
-    /** Current bullet type [0-4] (1 by default) */
-    private int bulletType = 1;
+    /** Current bullet type [0-4] (2 by default) */
+    private int bulletType = 2;
 
     /** Current number of achieved targets */
     private int score;
@@ -88,16 +94,29 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setScene(scene);
 
-        scoreText.setLayoutX(Landscape.WIDTH / 16);
+        scoreText.setLayoutX(Landscape.WIDTH * 13 / 16);
         scoreText.setLayoutY(Landscape.HEIGHT / 16);
         setScoreText();
 
-        timeText.setLayoutX(Landscape.WIDTH * 14 /  16);
-        timeText.setLayoutY(Landscape.HEIGHT / 16);
+        timeText.setLayoutX(Landscape.WIDTH * 13 /  16);
+        timeText.setLayoutY(Landscape.HEIGHT / 8);
         setTimeLeft();
+
+        usageText.setLayoutX(Landscape.WIDTH / 16);
+        usageText.setLayoutY(Landscape.HEIGHT / 16);
+        usageText.setText("LEFT/RIGHT to move cannon\n" +
+                          "UP/DOWN to change ange of cannon's barrel\n" +
+                          "ENTER to fire\n" +
+                          "[0-4] to change bomb type");
+
+        bulletTypeInfoText.setLayoutX(Landscape.WIDTH * 13 / 16);
+        bulletTypeInfoText.setLayoutY(Landscape.HEIGHT * 3 / 16);
+        updateBulletTypeInfo();
 
         pane.getChildren().add(scoreText);
         pane.getChildren().add(timeText);
+        pane.getChildren().add(usageText);
+        pane.getChildren().add(bulletTypeInfoText);
 
         timeLeft = GAME_TIME;
 
@@ -155,6 +174,7 @@ public class Main extends Application {
 
             } else if (code.isDigitKey() && Integer.parseInt(code.getChar()) < Bullet.getTypesNumber()) {
                 bulletType = Integer.parseInt(code.getChar());
+                updateBulletTypeInfo();
             }
         });
 
@@ -162,10 +182,15 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    /** Updates bullet type info text */
+    private void updateBulletTypeInfo() {
+        bulletTypeInfoText.setText("Bullet type: " + Bullet.getBulletTypeName(bulletType));
+    }
+
     /** Checks if target and cannon are too close to shot */
     private boolean isTooClose() {
-        return (Math.hypot(cannon.getBody().getCenterX() - target.getCenterX(),
-                cannon.getBody().getCenterY() - target.getCenterY()) < targetRadius * 4);
+        return Math.hypot(cannon.getBody().getCenterX() - target.getCenterX(),
+                cannon.getBody().getCenterY() - target.getCenterY()) < targetRadius * 4;
     }
 
     /** Set's current score to score text */
@@ -175,21 +200,21 @@ public class Main extends Application {
 
     /** Sets current left time to time text */
     private void setTimeLeft() {
-        timeText.setText(String.format("%01d:%02d", timeLeft / 60, timeLeft % 60));
+        timeText.setText(String.format("Time: %01d:%02d", timeLeft / 60, timeLeft % 60));
     }
 
     /** Creates new bullet (of current bullet type) and models it flight */
     private void fire() {
-        int x0 = cannon.getBarrelEndX();
-        int y0 = cannon.getBarrelEndY();
+        double x0 = cannon.getBarrelEndX();
+        double y0 = cannon.getBarrelEndY();
         Runnable task = () -> {
             int time = 0;
             Bullet bullet = new Bullet(x0, y0, bulletType, cannon.getAngle());
             Platform.runLater(() -> pane.getChildren().add(bullet.getBody()));
-            int newX = bullet.getXByTime(time);
-            int newY = bullet.getYByTime(time);
+            double newX = bullet.getXByTime(time);
+            double newY = bullet.getYByTime(time);
             while (newX > 0 && newX < Landscape.WIDTH
-                    && newY - bullet.getRadius() / 2 <= landscape.getYByX(newX)
+                    && newY - bullet.getRadius() <= landscape.getYByX(newX)
                         && !isCloseToTarget(newX, newY)) {
 
                 bullet.setX(newX);
@@ -265,8 +290,15 @@ public class Main extends Application {
      * @param y bullet's y coordinate
      * @return true if bullet lands close to target, depending on current bullet type, false otherwise
      */
-    private boolean isCloseToTarget(int x, int y) {
+    private boolean isCloseToTarget(double x, double y) {
         return Math.hypot(x - target.getCenterX(), y - target.getCenterY()) < targetRadius
-                + Bullet.getTypeDist(bulletType);
+                + Bullet .getTypeDist(bulletType);
+    }
+
+    /**
+     * Launches the game
+     */
+    public static void main(String[] args) {
+        launch(args);
     }
 }

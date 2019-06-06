@@ -25,15 +25,11 @@ public class Landscape {
     /** Lines list representing mountains */
     private ArrayList<Line> mounts = new ArrayList<>();
 
-    /** List of the ends of the mountain slopes */
-    private ArrayList<Point> points = new ArrayList<>();
-
     /** Generates random mountains */
     Landscape() {
         Random rnd = new Random(System.currentTimeMillis());
         int x0 = 0;
         int y0 = rnd.nextInt(HEIGHT / 4) + HEIGHT / 4;
-        points.add(new Point(x0, y0));
         while (x0 < WIDTH) {
             int newX = x0 + WIDTH / 16 + rnd.nextInt(WIDTH / 16);
             int newY = y0 - (HEIGHT / 8) + rnd.nextInt(HEIGHT / 4);
@@ -41,7 +37,6 @@ public class Landscape {
             newY = min(newY, HEIGHT * 3 / 4);
             newY = max(newY, HEIGHT / 4);
             mounts.add(new Line(x0, invertY(y0), newX, invertY(newY)));
-            points.add(new Point(newX, newY));
             x0 = newX;
             y0 = newY;
         }
@@ -60,12 +55,12 @@ public class Landscape {
      * @param x given x coordinate
      * @return y coordinate on mountains
      */
-    public int getYByX(int x) {
-        for (int i = 0; i < points.size(); i++) {
-            if (x >= points.get(i).x && x <= points.get(i + 1).x) {
-                return invertY(points.get(i).y +
-                        (points.get(i + 1). y - points.get(i).y) *
-                                (x - points.get(i).x) / (points.get(i + 1).x - points.get(i).x));
+    public double getYByX(double x) {
+        for (int i = 0; i < mounts.size(); i++) {
+            if (x >= mounts.get(i).getStartX() && x <= mounts.get(i).getEndX()) {
+                return mounts.get(i).getStartY() +
+                        (mounts.get(i).getEndY() - mounts.get(i).getStartY()) *
+                                (x - mounts.get(i).getStartX()) / (mounts.get(i).getEndX() - mounts.get(i).getStartX());
             }
         }
         return HEIGHT;
@@ -76,18 +71,7 @@ public class Landscape {
      * @param y given y coordinate
      * @return the inverted one
      */
-    private static int invertY(int y) {
+    private static double invertY(double y) {
         return HEIGHT - y;
     }
-
-    /** Class to store 2D points */
-    private static class Point {
-        private int x;
-        private int y;
-        Point(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
-
 }

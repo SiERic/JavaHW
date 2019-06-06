@@ -15,11 +15,11 @@ public class Cannon {
     /** Barrel's angel (in [0; pi] ) */
     private double angle;
 
-    /** X coordinate of body center (and the beginning of tje barrel) */
-    private int x;
+    /** X coordinate of body center (and the beginning of the barrel) */
+    private double x;
 
-    /** Y coordinate of body center (and the beginning of tje barrel) */
-    private int y;
+    /** Y coordinate of body center (and the beginning of the barrel) */
+    private double y;
 
     /** Body radius (depending on screen size) */
     private final static int BODY_RADIUS = Landscape.WIDTH / 80;
@@ -36,7 +36,7 @@ public class Cannon {
     /** Current landscape */
     private Landscape landscape;
 
-    Cannon(int x, int y, Landscape landscape) {
+    Cannon(double x, double y, Landscape landscape) {
         this.x = x;
         this.y = y;
         this.landscape = landscape;
@@ -110,16 +110,16 @@ public class Cannon {
      * Gets current barrel end x coordinate
      * @return current barrel end x coordinate
      */
-    public int getBarrelEndX() {
-        return (int) (x + BARREL_LENGTH * Math.cos(angle));
+    public double getBarrelEndX() {
+        return x + BARREL_LENGTH * Math.cos(angle);
     }
 
     /**
      * Gets current barrel end y coordinate
      * @return current barrel end y coordinate
      */
-    public int getBarrelEndY() {
-        return (int) (y - BARREL_LENGTH * Math.sin(angle));
+    public double getBarrelEndY() {
+        return y - BARREL_LENGTH * Math.sin(angle);
     }
 
     /** Updates body position with current coordinates */
@@ -132,8 +132,7 @@ public class Cannon {
     private void updateBarrel() {
         barrel.setStartX(x);
         barrel.setStartY(y);
-        barrel.setEndX(x + BARREL_LENGTH * Math.cos(angle));
-        barrel.setEndY(y - BARREL_LENGTH * Math.sin(angle));
+        barrel.setEndX(getBarrelEndX());
+        barrel.setEndY(getBarrelEndY());
     }
-
 }
