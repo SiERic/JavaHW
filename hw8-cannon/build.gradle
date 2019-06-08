@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
+}
+
+group 'me.sieric'
+version '1.0'
+sourceCompatibility = 11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.jetbrains', name: 'annotations', version: '15.0'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.0.1'
+    testCompile group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.0.0'
+    testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.0.1'
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:win"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:linux"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:mac"
+}
+
+javafx {
+    version = "11.0.2"
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.base' ]
+}
+
+mainClassName = 'me.sieric.cannon.GameLauncher'
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'me.sieric.cannon.GameLauncher'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
