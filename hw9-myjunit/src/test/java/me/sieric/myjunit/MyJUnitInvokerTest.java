@@ -8,78 +8,48 @@ import static org.junit.jupiter.api.Assertions.*;
 class MyJUnitInvokerTest {
 
     @Test
-    void testEmptyClass() {
-        MyJUnitInvoker.TestStatus status = null;
-        try {
-            status = MyJUnitInvoker.run(EmptyClass.class);
-        } catch (InstantiationException | MyJUnitException | IllegalAccessException e) {
-            fail("Exception thrown");
-        }
+    void testEmptyClass() throws IllegalAccessException, MyJUnitException, InstantiationException {
+        MyJUnitInvoker.TestStatus status = MyJUnitInvoker.run(EmptyClass.class);
         assertEquals(0, status.failed);
         assertEquals(0, status.passed);
         assertEquals(0, status.ignored);
     }
 
     @Test
-    void testPass() {
-        MyJUnitInvoker.TestStatus status = null;
-        try {
-            status = MyJUnitInvoker.run(PassClass.class);
-        } catch (InstantiationException | MyJUnitException | IllegalAccessException e) {
-            fail("Exception thrown");
-        }
+    void testPass() throws IllegalAccessException, MyJUnitException, InstantiationException {
+        MyJUnitInvoker.TestStatus status = MyJUnitInvoker.run(PassClass.class);
         assertEquals(0, status.failed);
         assertEquals(1, status.passed);
         assertEquals(0, status.ignored);
     }
 
     @Test
-    void testIgnore() {
-        MyJUnitInvoker.TestStatus status = null;
-        try {
-            status = MyJUnitInvoker.run(IgnoredTestClass.class);
-        } catch (InstantiationException | MyJUnitException | IllegalAccessException e) {
-            fail("Exception thrown");
-        }
+    void testIgnore() throws IllegalAccessException, MyJUnitException, InstantiationException {
+        MyJUnitInvoker.TestStatus status = MyJUnitInvoker.run(IgnoredTestClass.class);
         assertEquals(0, status.failed);
         assertEquals(0, status.passed);
         assertEquals(1, status.ignored);
     }
 
     @Test
-    void testFail() {
-        MyJUnitInvoker.TestStatus status = null;
-        try {
-            status = MyJUnitInvoker.run(FailClass.class);
-        } catch (InstantiationException | MyJUnitException | IllegalAccessException e) {
-            fail("Exception thrown");
-        }
+    void testFail() throws IllegalAccessException, MyJUnitException, InstantiationException {
+        MyJUnitInvoker.TestStatus status = MyJUnitInvoker.run(FailClass.class);
         assertEquals(1, status.failed);
         assertEquals(0, status.passed);
         assertEquals(0, status.ignored);
     }
 
     @Test
-    void testCheckException() {
-        MyJUnitInvoker.TestStatus status = null;
-        try {
-            status = MyJUnitInvoker.run(ClassWithRightException.class);
-        } catch (InstantiationException | MyJUnitException | IllegalAccessException e) {
-            fail("Exception thrown");
-        }
+    void testCheckException() throws IllegalAccessException, MyJUnitException, InstantiationException {
+        MyJUnitInvoker.TestStatus status = MyJUnitInvoker.run(ClassWithRightException.class);
         assertEquals(0, status.failed);
         assertEquals(1, status.passed);
         assertEquals(0, status.ignored);
     }
 
     @Test
-    void testCheckExceptionFailed() {
-        MyJUnitInvoker.TestStatus status = null;
-        try {
-            status = MyJUnitInvoker.run(ClassWithoutRightException.class);
-        } catch (InstantiationException | MyJUnitException | IllegalAccessException e) {
-            fail("Exception thrown");
-        }
+    void testCheckExceptionFailed() throws IllegalAccessException, MyJUnitException, InstantiationException {
+        MyJUnitInvoker.TestStatus status = MyJUnitInvoker.run(ClassWithoutRightException.class);
         assertEquals(1, status.failed);
         assertEquals(0, status.passed);
         assertEquals(0, status.ignored);
@@ -100,15 +70,10 @@ class MyJUnitInvokerTest {
     }
 
     @Test
-    void testBeforeAfter() {
+    void testBeforeAfter() throws IllegalAccessException, MyJUnitException, InstantiationException {
         TestClass.before = 0;
         TestClass.after = 0;
-        MyJUnitInvoker.TestStatus status = null;
-        try {
-            status = MyJUnitInvoker.run(BeforeAfter.class);
-        } catch (InstantiationException | MyJUnitException | IllegalAccessException e) {
-            fail("Exception thrown");
-        }
+        MyJUnitInvoker.TestStatus status = MyJUnitInvoker.run(BeforeAfter.class);
         assertEquals(0, status.failed);
         assertEquals(3, status.passed);
         assertEquals(0, status.ignored);
